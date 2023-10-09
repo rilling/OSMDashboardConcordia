@@ -256,6 +256,7 @@ public class DownloadActivity extends BaseActivity {
                         input.close();
                     }
                 } catch (IOException ignored) {
+                    Log.e(TAG, "IOException", ignored);
                 }
 
                 if (connection != null) {
