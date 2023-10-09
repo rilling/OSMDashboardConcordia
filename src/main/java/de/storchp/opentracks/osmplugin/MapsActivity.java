@@ -966,10 +966,8 @@ public class MapsActivity extends BaseActivity implements SensorListener {
 
     @Override
     public boolean updateSensor() {
-        if (endMarker != null) {
-            if (endMarker.rotateWith(arrowMode, mapMode, movementDirection, compass)) {
-                binding.map.mapView.getLayerManager().redrawLayers();
-            }
+        if (endMarker != null && endMarker.rotateWith(arrowMode, mapMode, movementDirection, compass)) {
+            binding.map.mapView.getLayerManager().redrawLayers();
         }
 
         rotateMap();
