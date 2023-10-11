@@ -10,6 +10,9 @@ public class FileUtil {
 
     private static final String TAG = FileUtil.class.getSimpleName();
 
+    private FileUtil() {
+        throw new UnsupportedOperationException("Utility class");
+    }
     public static DocumentFile getDocumentFileFromTreeUri(Context context, Uri uri) {
         try {
             return DocumentFile.fromTreeUri(context, uri);
