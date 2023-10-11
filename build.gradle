@@ -3,16 +3,23 @@ buildscript {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven{
+            url"https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.1.1'
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
+
     }
 }
+
 
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'de.mannodermaus.android-junit5'
+    id "org.sonarqube" version "4.2.1.3168"
 }
 
 
