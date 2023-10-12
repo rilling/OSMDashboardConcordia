@@ -13,6 +13,18 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'de.mannodermaus.android-junit5'
+    id("org.sonarqube") version "4.4.0.3356"
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.login", "sqa_9f06c0833b632551ed7852cc58efe4604f9fff38"
+        property('sonar.projectName', 'SonarQube Scanner')
+        property("sonar.projectKey", "sonarqube-scanner-gradle")
+        property("sonar.sources", "src/main")
+        property "sonar.tests", "src/test"
+    }
 }
 
 def getVersionCode = { ->
@@ -31,7 +43,7 @@ def getVersionCode = { ->
 android {
     defaultConfig {
         compileSdk 34
-        buildToolsVersion = "30.0.3"
+        buildToolsVersion = "34.0.0"
         minSdkVersion 24
         targetSdkVersion 34
         versionCode 38
@@ -42,12 +54,12 @@ android {
     }
     signingConfigs {
         nightly {
-            if (System.getProperty("nightly_store_file") != null) {
-                storeFile file(System.getProperty("nightly_store_file"))
-                storePassword System.getProperty("nightly_store_password")
-                keyAlias System.getProperty("nightly_key_alias")
-                keyPassword System.getProperty("nightly_key_password")
-            }
+//            if (System.getProperty("nightly_store_file") != null) {
+//                storeFile file(System.getProperty("nightly_store_file"))
+//                storePassword System.getProperty("nightly_store_password")
+//                keyAlias System.getProperty("nightly_key_alias")
+//                keyPassword System.getProperty("nightly_key_password")
+//            }
         }
     }
     compileOptions {
@@ -81,7 +93,7 @@ android {
             applicationIdSuffix ".debug"
         }
         nightly {
-            signingConfig signingConfigs.nightly
+//            signingConfig signingConfigs.nightly
             applicationIdSuffix ".nightly"
         }
         release {

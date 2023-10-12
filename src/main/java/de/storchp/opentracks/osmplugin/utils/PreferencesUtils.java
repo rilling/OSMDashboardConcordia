@@ -19,7 +19,7 @@ import de.storchp.opentracks.osmplugin.R;
 public class PreferencesUtils {
 
     private final static String TAG = PreferencesUtils.class.getSimpleName();
-    private static final Set<String> DEFAULT_STATISTIC_ELEMENTS = Set.of(
+    private final static Set<String> DEFAULT_STATISTIC_ELEMENTS = Set.of(
             StatisticElement.CATEGORY.name(),
             StatisticElement.MOVING_TIME.name(),
             StatisticElement.DISTANCE_KM.name(),
