@@ -18,6 +18,9 @@ import de.storchp.opentracks.osmplugin.R;
 
 public class PreferencesUtils {
 
+    private PreferencesUtils() {
+        throw new IllegalStateException("Utility class");
+    }
     private final static String TAG = PreferencesUtils.class.getSimpleName();
     private final static Set<String> DEFAULT_STATISTIC_ELEMENTS = Set.of(
             StatisticElement.CATEGORY.name(),
