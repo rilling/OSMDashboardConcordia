@@ -905,14 +905,13 @@ public class MapsActivity extends BaseActivity implements SensorListener {
     }
 
     @Override
-    protected void onPause() {
-        if (!isPiPMode()) {
-            if (tileLayer instanceof TileDownloadLayer) {
-                ((TileDownloadLayer) tileLayer).onPause();
-            }
-        }
-        super.onPause();
+protected void onPause() {
+    if (!isPiPMode() && tileLayer instanceof TileDownloadLayer) {
+        ((TileDownloadLayer) tileLayer).onPause();
     }
+    super.onPause();
+}
+
 
     @Override
     protected void onStart() {
