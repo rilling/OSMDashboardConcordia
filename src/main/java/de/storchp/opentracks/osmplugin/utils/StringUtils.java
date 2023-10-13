@@ -64,6 +64,11 @@ public class StringUtils {
             return "0:00";
         }
         double kmPerSecond = (meterPerSeconds / KM_TO_M) * KM_TO_MI;
+        if(kmPerSecond == 0)
+        {
+            return "0:00";
+        }
+        
         int secondsPerKm = (int)(1 / kmPerSecond);
         int minutes = (int)(secondsPerKm / MIN_TO_S);
         int seconds = secondsPerKm % (int)MIN_TO_S;
