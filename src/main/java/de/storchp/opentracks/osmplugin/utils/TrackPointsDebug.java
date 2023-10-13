@@ -1,9 +1,9 @@
 package de.storchp.opentracks.osmplugin.utils;
 
 public class TrackPointsDebug {
-    public static  int trackpointsReceived = 0;
-    public static  int trackpointsInvalid = 0;
-    public static  int trackpointsDrawn = 0;
+    public int trackpointsReceived = 0;
+    public int trackpointsInvalid = 0;
+    public int trackpointsDrawn = 0;
     public int trackpointsPause = 0;
     public int segments = 0;
 
