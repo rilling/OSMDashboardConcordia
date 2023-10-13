@@ -28,7 +28,7 @@ public class Track {
     public static final String MAXELEVATION = "maxelevation"; // maximum elevation
     public static final String ELEVATIONGAIN = "elevationgain"; // elevation gain
 
-    public static final String[] PROJECTION = {
+    protected static final String[] PROJECTION = {
             _ID,
             NAME,
             DESCRIPTION,
@@ -48,8 +48,8 @@ public class Track {
 
     private final long id;
     private final String trackname;
-    private final String description;
-    private final String category;
+    protected final String description;
+    protected final String category;
     private final int startTimeEpochMillis;
     private final int stopTimeEpochMillis;
     private final float totalDistanceMeter;
