@@ -1,5 +1,6 @@
 package de.storchp.opentracks.osmplugin;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -76,67 +77,70 @@ abstract class BaseActivity extends AppCompatActivity {
 
         return true;
     }
-
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.map_online_consent) {
-            item.setChecked(!item.isChecked());
-            PreferencesUtils.setOnlineMapConsent(item.isChecked());
-            onOnlineMapConsentChanged(item.isChecked());
-        } else if (itemId == R.id.track_color) {
-            showTrackColorDialog();
-        } else if (itemId == R.id.configure_statistic) {
-            showConfigureStatisticDialog();
-        } else if (itemId == R.id.track_smoothing) {
-            showTrackSmoothingDialog();
-        } else if (itemId == R.id.compass_smoothing) {
-            showCompassSmoothingDialog();
-        } else if (itemId == R.id.stroke_width) {
-            showStrokeWidthDialog();
-        } else if (itemId == R.id.multi_thread_map_rendering) {
-            item.setChecked(!item.isChecked());
-            PreferencesUtils.setMultiThreadMapRendering(item.isChecked());
-        } else if (itemId == R.id.persistent_tilecache) {
-            item.setChecked(!item.isChecked());
-            PreferencesUtils.setPersistentTileCache(item.isChecked());
-        } else if (itemId == R.id.pip_mode) {
-            item.setChecked(!item.isChecked());
-            PreferencesUtils.setPipEnabled(item.isChecked());
-        } else if (itemId == R.id.map_selection) {
-            startActivity(new Intent(this, MapSelectionActivity.class));
-        } else if (itemId == R.id.theme_selection) {
-            startActivity(new Intent(this, ThemeSelectionActivity.class));
-        } else if (itemId == R.id.map_folder) {
-            openDirectory(mapDirectoryLauncher);
-        } else if (itemId == R.id.theme_folder) {
-            openDirectory(themeDirectoryLauncher);
-        } else if (itemId == R.id.download_map) {
-            startActivity(new Intent(this, DownloadMapSelectionActivity.class));
-        } else if (itemId == R.id.arrow_mode) {
-            var arrowMode = PreferencesUtils.getArrowMode();
-            arrowMode = arrowMode.next();
-            item.setTitle(arrowMode.getMessageId());
-            PreferencesUtils.setArrowMode(arrowMode);
-            changeArrowMode(arrowMode);
-        } else if (itemId == R.id.map_mode) {
-            var mapMode = PreferencesUtils.getMapMode();
-            mapMode = mapMode.next();
-            item.setTitle(mapMode.getMessageId());
-            PreferencesUtils.setMapMode(mapMode);
-            changeMapMode(mapMode);
-        } else if (itemId == R.id.overdraw_factor) {
-            showOverdrawFactorDialog();
-        } else if (itemId == R.id.tilecache_capacity_factor) {
-            showTileCacheCapacityFactorDialog();
-        } else if (itemId == R.id.debug_trackpoints) {
-            item.setChecked(!item.isChecked());
-            PreferencesUtils.setDebugTrackPoints(item.isChecked());
-            updateDebugTrackPoints();
+
+        switch (itemId) {
+            case R.id.map_online_consent -> {
+                item.setChecked(!item.isChecked());
+                PreferencesUtils.setOnlineMapConsent(item.isChecked());
+                onOnlineMapConsentChanged(item.isChecked());
+            }
+            case R.id.track_color -> showTrackColorDialog();
+            case R.id.configure_statistic -> showConfigureStatisticDialog();
+            case R.id.track_smoothing -> showTrackSmoothingDialog();
+            case R.id.compass_smoothing -> showCompassSmoothingDialog();
+            case R.id.stroke_width -> showStrokeWidthDialog();
+            case R.id.multi_thread_map_rendering -> {
+                item.setChecked(!item.isChecked());
+                PreferencesUtils.setMultiThreadMapRendering(item.isChecked());
+            }
+            case R.id.persistent_tilecache -> {
+                item.setChecked(!item.isChecked());
+                PreferencesUtils.setPersistentTileCache(item.isChecked());
+            }
+            case R.id.pip_mode -> {
+                item.setChecked(!item.isChecked());
+                PreferencesUtils.setPipEnabled(item.isChecked());
+            }
+            case R.id.map_selection -> startActivity(new Intent(this, MapSelectionActivity.class));
+            case R.id.theme_selection ->
+                    startActivity(new Intent(this, ThemeSelectionActivity.class));
+            case R.id.map_folder -> openDirectory(mapDirectoryLauncher);
+            case R.id.theme_folder -> openDirectory(themeDirectoryLauncher);
+            case R.id.download_map ->
+                    startActivity(new Intent(this, DownloadMapSelectionActivity.class));
+            case R.id.arrow_mode -> {
+                var arrowMode = PreferencesUtils.getArrowMode();
+                arrowMode = arrowMode.next();
+                item.setTitle(arrowMode.getMessageId());
+                PreferencesUtils.setArrowMode(arrowMode);
+                changeArrowMode(arrowMode);
+            }
+            case R.id.map_mode -> {
+                var mapMode = PreferencesUtils.getMapMode();
+                mapMode = mapMode.next();
+                item.setTitle(mapMode.getMessageId());
+                PreferencesUtils.setMapMode(mapMode);
+                changeMapMode(mapMode);
+            }
+            case R.id.overdraw_factor -> showOverdrawFactorDialog();
+            case R.id.tilecache_capacity_factor -> showTileCacheCapacityFactorDialog();
+            case R.id.debug_trackpoints -> {
+                item.setChecked(!item.isChecked());
+                PreferencesUtils.setDebugTrackPoints(item.isChecked());
+                updateDebugTrackPoints();
+            }
+            default -> {
+                return super.onOptionsItemSelected(item);
+            }
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
+
 
     private void showTrackColorDialog() {
         var trackColorModes = TrackColorMode.values();
