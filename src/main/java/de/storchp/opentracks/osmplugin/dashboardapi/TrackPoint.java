@@ -45,13 +45,13 @@ public class TrackPoint {
     };
 
     private final long trackPointId;
-    private final long trackId;
+    private final long pointTrackCode;
     private final LatLong latLong;
     private final boolean pause;
     private final double speed;
 
-    public TrackPoint(long trackId, long trackPointId, double latitude, double longitude, Integer type, double speed) {
-        this.trackId = trackId;
+    public TrackPoint(long pointTrackCode, long trackPointId, double latitude, double longitude, Integer type, double speed) {
+        this.pointTrackCode = pointTrackCode;
         this.trackPointId = trackPointId;
         if (MapUtils.isValid(latitude, longitude)) {
             this.latLong = new LatLong(latitude, longitude);
@@ -100,7 +100,7 @@ public class TrackPoint {
                     type = cursor.getInt(typeIndex);
                 }
 
-                if (lastTrackPoint == null || lastTrackPoint.trackId != trackId) {
+                if (lastTrackPoint == null || lastTrackPoint.pointTrackCode != trackId) {
                     segment = new ArrayList<>();
                     segments.add(segment);
                 }
@@ -126,8 +126,8 @@ public class TrackPoint {
         return trackPointId;
     }
 
-    public long getTrackId() {
-        return trackId;
+    public long getPointTrackCode() {
+        return pointTrackCode;
     }
 
     public LatLong getLatLong() {

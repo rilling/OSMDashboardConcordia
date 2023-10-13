@@ -583,11 +583,11 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                     for (var trackPoint : trackPoints) {
                         lastTrackPointId = trackPoint.getTrackPointId();
 
-                        if (trackPoint.getTrackId() != lastTrackId) {
+                        if (trackPoint.getPointTrackCode() != lastTrackId) {
                             if (trackColorMode == TrackColorMode.BY_TRACK) {
                                 trackColor = colorCreator.nextColor();
                             }
-                            lastTrackId = trackPoint.getTrackId();
+                            lastTrackId = trackPoint.getPointTrackCode();
                             polyline = null; // reset current polyline when trackId changes
                             startPos = null;
                             endPos = null;
