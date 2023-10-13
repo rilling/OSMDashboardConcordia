@@ -56,6 +56,8 @@ public class StyleColorCreator {
                 green = p;
                 blue = q;
                 break;
+            default:
+            //all cases of i%6 are covered.leaving default case empty
         }
 
         return AndroidGraphicFactory.INSTANCE.createColor(alpha, (int) (red * 255), (int) (green * 255), (int) (blue * 255));
