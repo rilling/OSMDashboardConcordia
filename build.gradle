@@ -8,7 +8,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.1'
+        classpath 'com.android.tools.build:gradle:8.1.2'
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
 
     }
@@ -22,6 +22,14 @@ plugins {
     id "org.sonarqube" version "4.2.1.3168"
 }
 
+sonarqube {
+    properties {
+        property "sonar.projectKey", "Compass"
+        property "sonar.projectName", "Compass"
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.login", "sqp_320e32441e93a4b69251201b28a89d9338056dbb"
+    }
+}
 
 def getVersionCode = { ->
     try {
@@ -39,7 +47,7 @@ def getVersionCode = { ->
 android {
     defaultConfig {
         compileSdk 34
-        buildToolsVersion = "30.0.3"
+        buildToolsVersion = "33.0.1"
         minSdkVersion 24
         targetSdkVersion 34
         versionCode 38
