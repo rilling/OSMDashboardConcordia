@@ -21,8 +21,8 @@ public class PreferencesUtils {
     private PreferencesUtils() {
         throw new IllegalStateException("Utility class");
     }
-    private final static String TAG = PreferencesUtils.class.getSimpleName();
-    private final static Set<String> DEFAULT_STATISTIC_ELEMENTS = Set.of(
+    private static final String TAG = PreferencesUtils.class.getSimpleName();
+    private static final Set<String> DEFAULT_STATISTIC_ELEMENTS = Set.of(
             StatisticElement.CATEGORY.name(),
             StatisticElement.MOVING_TIME.name(),
             StatisticElement.DISTANCE_KM.name(),
