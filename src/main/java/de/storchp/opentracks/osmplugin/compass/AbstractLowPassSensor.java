@@ -46,6 +46,8 @@ public abstract class AbstractLowPassSensor extends AbstractSensor {
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int newAccuracy) {
+            //Do Nothing
+            throw new UnsupportedOperationException();
         }
 
     };
