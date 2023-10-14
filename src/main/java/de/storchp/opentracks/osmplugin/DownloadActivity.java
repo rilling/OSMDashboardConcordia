@@ -44,6 +44,7 @@ public class DownloadActivity extends BaseActivity {
     private DownloadTask downloadTask;
     private ActivityDownloadBinding binding;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,59 +53,53 @@ public class DownloadActivity extends BaseActivity {
 
         binding.toolbar.mapsToolbar.setTitle(R.string.download_map);
         setSupportActionBar(binding.toolbar.mapsToolbar);
-
         binding.progressBar.setIndeterminate(true);
 
-        var uri = getIntent().getData();
-        if (uri != null) {
-            var scheme = uri.getScheme();
-            var host = uri.getHost();
-            var path = uri.getPath();
-            Log.i(TAG, "scheme=" + scheme + ",host=" + host + ", path=" + path + ", lastPathSegment=" + uri.getLastPathSegment());
-            downloadUri = uri;
-
-            if (MF_V4_MAP_SCHEME.equals(scheme)) {
-                if (host.equals("download.openandromaps.org") && path.startsWith("/mapsV4/") && path.endsWith(".zip")) {
-                    // OpenAndroMaps URIs need to be remapped - mf-v4-map://download.openandromaps.org/mapsV4/Germany/bayern.zip
-                    downloadUri = Uri.parse(OPENANDROMAPS_MAP_DOWNLOAD_URL + path.substring(8));
-                    downloadType = DownloadType.MAP_ZIP;
-                } else {
-                    // try to replace MF_V4_MAP_SCHEME with https for unknown sources
-                    downloadUri = uri.buildUpon().scheme("https").build();
-                    downloadType = path.endsWith(".zip") ? DownloadType.MAP_ZIP : DownloadType.MAP;
-                }
-            } else if (MF_THEME_SCHEME.equals(scheme)) {
-                if (host.equals("download.openandromaps.org") && path.startsWith("/themes/") && path.endsWith(".zip")) {
-                    // no remapping, as they have themes only on their homepage, not on their ftp site
-                    downloadUri = Uri.parse(OPENANDROMAPS_THEME_DOWNLOAD_URL + path.substring(8));
-                } else {
-                    // try to replace MF_THEME_SCHEME with https for unknown sources
-                    downloadUri = uri.buildUpon().scheme("https").build();
-                }
-                downloadType = DownloadType.THEME;
-                binding.toolbar.mapsToolbar.setTitle(R.string.download_theme);
-            } else if (FREIZEITKARTE_HOST.equals(host)) {
-                if (path.endsWith(".map.zip")) {
-                    downloadType = DownloadType.MAP_ZIP;
-                } else if (path.endsWith(".zip")) {
-                    downloadType = DownloadType.THEME;
-                    binding.toolbar.mapsToolbar.setTitle(R.string.download_theme);
-                }
-            } else if (OPENANDROMAPS_MAP_HOST.equals(host) && path.endsWith(".zip")) {
-                downloadType = DownloadType.MAP_ZIP;
-            } else if (OPENANDROMAPS_THEME_HOST.equals(host) && path.endsWith(".zip")) {
-                downloadType = DownloadType.THEME;
-            }
-
-            Log.i(TAG, "downloadUri=" + downloadUri + ", downloadType=" + downloadType);
-
-            binding.downloadInfo.setText(downloadUri.toString());
-            binding.startDownloadButton.setOnClickListener((view) -> startDownload());
-        } else {
+        Uri uri = getIntent().getData();
+        if (uri == null) {
             binding.downloadInfo.setText(R.string.no_download_uri_found);
             binding.startDownloadButton.setEnabled(false);
+            return;
         }
 
+        String scheme = uri.getScheme();
+        String host = uri.getHost();
+        String path = uri.getPath();
+        Log.i(TAG, "scheme=" + scheme + ",host=" + host + ", path=" + path + ", lastPathSegment=" + uri.getLastPathSegment());
+        downloadUri = uri;
+
+        if (MF_V4_MAP_SCHEME.equals(scheme)) {
+            if (host.equals("download.openandromaps.org") && path.startsWith("/mapsV4/") && path.endsWith(".zip")) {
+                downloadUri = Uri.parse(OPENANDROMAPS_MAP_DOWNLOAD_URL + path.substring(8));
+                downloadType = DownloadType.MAP_ZIP;
+            } else {
+                downloadUri = uri.buildUpon().scheme("https").build();
+                downloadType = path.endsWith(".zip") ? DownloadType.MAP_ZIP : DownloadType.MAP;
+            }
+        } else if (MF_THEME_SCHEME.equals(scheme)) {
+            if (host.equals("download.openandromaps.org") && path.startsWith("/themes/") && path.endsWith(".zip")) {
+                downloadUri = Uri.parse(OPENANDROMAPS_THEME_DOWNLOAD_URL + path.substring(8));
+            } else {
+                downloadUri = uri.buildUpon().scheme("https").build();
+            }
+            downloadType = DownloadType.THEME;
+            binding.toolbar.mapsToolbar.setTitle(R.string.download_theme);
+        } else if (FREIZEITKARTE_HOST.equals(host)) {
+            if (path.endsWith(".map.zip")) {
+                downloadType = DownloadType.MAP_ZIP;
+            } else if (path.endsWith(".zip")) {
+                downloadType = DownloadType.THEME;
+                binding.toolbar.mapsToolbar.setTitle(R.string.download_theme);
+            }
+        } else if (OPENANDROMAPS_MAP_HOST.equals(host) && path.endsWith(".zip")) {
+            downloadType = DownloadType.MAP_ZIP;
+        } else if (OPENANDROMAPS_THEME_HOST.equals(host) && path.endsWith(".zip")) {
+            downloadType = DownloadType.THEME;
+        }
+
+        Log.i(TAG, "downloadUri=" + downloadUri + ", downloadType=" + downloadType);
+        binding.downloadInfo.setText(downloadUri.toString());
+        binding.startDownloadButton.setOnClickListener((view) -> startDownload());
     }
 
     private boolean isDownloadInProgress() {
