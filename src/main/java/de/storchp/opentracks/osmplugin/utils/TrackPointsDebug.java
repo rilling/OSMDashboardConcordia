@@ -1,41 +1,21 @@
- package de.storchp.opentracks.osmplugin.utils;
+package de.storchp.opentracks.osmplugin.utils;
+
+ 
 
 public class TrackPointsDebug {
+    public int trackpointsReceived = 0;
+    public int trackpointsInvalid = 0;
+    public int trackpointsDrawn = 0;
+    public int trackpointsPause = 0;
+    public int segments = 0;
 
-    private int trackpointsReceived = 0;
-    private int trackpointsInvalid = 0;
-    private int trackpointsDrawn = 0;
-    private int trackpointsPause = 0;
-    private int segments = 0;
-
-    public int getTrackpointsReceived() {
-        return trackpointsReceived;
-    }
-
-    public int getTrackpointsInvalid() {
-        return trackpointsInvalid;
-    }
-
-    public int getTrackpointsDrawn() {
-        return trackpointsDrawn;
-    }
-
-    public int getTrackpointsPause() {
-        return trackpointsPause;
-    }
-
-    public int getSegments() {
-        return segments;
-    }
+ 
 
     public void add(final TrackPointsDebug other) {
-        if (other != null) {
-            this.trackpointsReceived += other.getTrackpointsReceived();
-            this.trackpointsInvalid += other.getTrackpointsInvalid();
-            this.trackpointsDrawn += other.getTrackpointsDrawn();
-            this.trackpointsPause += other.getTrackpointsPause();
-            this.segments += other.getSegments();
-        }
+        this.trackpointsReceived += other.trackpointsReceived;
+        this.trackpointsInvalid += other.trackpointsInvalid;
+        this.trackpointsDrawn += other.trackpointsDrawn;
+        this.trackpointsPause += other.trackpointsPause;
+        this.segments += other.segments;
     }
-  
 }
