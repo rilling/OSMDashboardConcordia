@@ -544,7 +544,7 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                 setOnlineTileLayer();
                 ((TileDownloadLayer) this.tileLayer).onResume();
             }
-        } else if (this.tileLayer != null && this.tileLayer instanceof TileDownloadLayer) {
+        } else if ( this.tileLayer instanceof TileDownloadLayer) {
             ((TileDownloadLayer) this.tileLayer).onPause();
             binding.map.mapView.getLayerManager().getLayers().remove(tileLayer, true);
             this.tileLayer = null;
