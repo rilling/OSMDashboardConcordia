@@ -18,8 +18,4 @@ public class FileUtil {
         }
         return null;
     }
-
-    private void FileUtil()
-    {
-    }
 }
