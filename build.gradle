@@ -13,6 +13,7 @@ buildscript {
     }
 }
 
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -28,7 +29,6 @@ sonarqube {
         property "sonar.login", "sqp_4eedf70c8096eb6f5c56af72cb9aae08a10905f6"
     }
 }
-
 
 def getVersionCode = { ->
     try {

@@ -19,7 +19,7 @@ public abstract class AbstractLowPassSensor extends AbstractSensor {
     private final LowPassFilter[] filters;
     private Vector3 value = Vector3.ZERO;
 
-    public AbstractLowPassSensor(Context context, int sensorType, int sensorDelay, float filterSize) {
+    protected AbstractLowPassSensor(Context context, int sensorType, int sensorDelay, float filterSize) {
         this.sensorType = sensorType;
         this.sensorDelay = sensorDelay;
         this.sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
