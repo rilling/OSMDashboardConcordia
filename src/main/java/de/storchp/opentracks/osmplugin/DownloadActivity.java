@@ -44,6 +44,7 @@ public class DownloadActivity extends BaseActivity {
     private DownloadTask downloadTask;
     private ActivityDownloadBinding binding;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
