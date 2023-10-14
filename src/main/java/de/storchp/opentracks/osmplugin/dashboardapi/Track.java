@@ -49,7 +49,7 @@ public class Track {
     private final long id;
     private final String trackname;
     protected final String description;
-    protected final String category;
+    protected final String trackCategory;
     private final int startTimeEpochMillis;
     private final int stopTimeEpochMillis;
     private final float totalDistanceMeter;
@@ -62,11 +62,11 @@ public class Track {
     private final float maxElevationMeter;
     private final float elevationGainMeter;
 
-    public Track(long id, String trackname, String description, String category, int startTimeEpochMillis, int stopTimeEpochMillis, float totalDistanceMeter, int totalTimeMillis, int movingTimeMillis, float avgSpeedMeterPerSecond, float avgMovingSpeedMeterPerSecond, float maxSpeedMeterPerSecond, float minElevationMeter, float maxElevationMeter, float elevationGainMeter) {
+    public Track(long id, String trackname, String description, String trackCategory, int startTimeEpochMillis, int stopTimeEpochMillis, float totalDistanceMeter, int totalTimeMillis, int movingTimeMillis, float avgSpeedMeterPerSecond, float avgMovingSpeedMeterPerSecond, float maxSpeedMeterPerSecond, float minElevationMeter, float maxElevationMeter, float elevationGainMeter) {
         this.id = id;
         this.trackname = trackname;
         this.description = description;
-        this.category = category;
+        this.trackCategory = trackCategory;
         this.startTimeEpochMillis = startTimeEpochMillis;
         this.stopTimeEpochMillis = stopTimeEpochMillis;
         this.totalDistanceMeter = totalDistanceMeter;
@@ -162,7 +162,7 @@ public class Track {
     }
 
     public String getCategory() {
-        return category;
+        return trackCategory;
     }
 
     public String getDescription() {
