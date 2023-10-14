@@ -583,11 +583,11 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                     for (var trackPoint : trackPoints) {
                         lastTrackPointId = trackPoint.getTrackPointId();
 
-                        if (trackPoint.getTrackId() != lastTrackId) {
+                        if (trackPoint.getPointTrackCode() != lastTrackId) {
                             if (trackColorMode == TrackColorMode.BY_TRACK) {
                                 trackColor = colorCreator.nextColor();
                             }
-                            lastTrackId = trackPoint.getTrackId();
+                            lastTrackId = trackPoint.getPointTrackCode();
                             polyline = null; // reset current polyline when trackId changes
                             startPos = null;
                             endPos = null;
@@ -651,7 +651,7 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                     binding.map.mapView.setCenter(myPos);
                 }
                 var layers = binding.map.mapView.getLayerManager().getLayers();
-                if (layers.indexOf(polylinesLayer) == -1 && polylinesLayer.layers.size() > 0) {
+                if (layers.indexOf(polylinesLayer) == -1 && !polylinesLayer.layers.isEmpty()) {
                     layers.add(polylinesLayer);
                 }
             }
@@ -905,14 +905,13 @@ public class MapsActivity extends BaseActivity implements SensorListener {
     }
 
     @Override
-    protected void onPause() {
-        if (!isPiPMode()) {
-            if (tileLayer instanceof TileDownloadLayer) {
-                ((TileDownloadLayer) tileLayer).onPause();
-            }
-        }
-        super.onPause();
+protected void onPause() {
+    if (!isPiPMode() && tileLayer instanceof TileDownloadLayer) {
+        ((TileDownloadLayer) tileLayer).onPause();
     }
+    super.onPause();
+}
+
 
     @Override
     protected void onStart() {

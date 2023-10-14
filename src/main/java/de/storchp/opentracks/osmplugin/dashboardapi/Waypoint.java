@@ -28,7 +28,7 @@ public class Waypoint {
     public static final String LATITUDE = "latitude"; // latitude
     public static final String PHOTOURL = "photoUrl"; // url for the photo
 
-    public static final String[] PROJECTION = {
+    protected static final String[] PROJECTION = {
             _ID,
             NAME,
             DESCRIPTION,
@@ -51,9 +51,9 @@ public class Waypoint {
     private String icon;
     private long trackId;
     private final LatLong latLong;
-    private String photoUrl;
+    private String userPhotoUrl;
 
-    public Waypoint(long id, String name, String description, String category, String icon, long trackId, LatLong latLong, String photoUrl) {
+    public Waypoint(long id, String name, String description, String category, String icon, long trackId, LatLong latLong, String userPhotoUrl) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -61,7 +61,7 @@ public class Waypoint {
         this.icon = icon;
         this.trackId = trackId;
         this.latLong = latLong;
-        this.photoUrl = photoUrl;
+        this.userPhotoUrl = userPhotoUrl;
     }
 
     public Waypoint(final LatLong latLong, final String name) {
@@ -130,8 +130,8 @@ public class Waypoint {
                 var longitude = cursor.getInt(cursor.getColumnIndexOrThrow(Waypoint.LONGITUDE)) / LAT_LON_FACTOR;
                 if (MapUtils.isValid(latitude, longitude)) {
                     var latLong = new LatLong(latitude, longitude);
-                    var photoUrl = cursor.getString(cursor.getColumnIndexOrThrow(Waypoint.PHOTOURL));
-                    waypoints.add(new Waypoint(waypointId, name, description, category, icon, trackId, latLong, photoUrl));
+                    var userPhotoUrl = cursor.getString(cursor.getColumnIndexOrThrow(Waypoint.PHOTOURL));
+                    waypoints.add(new Waypoint(waypointId, name, description, category, icon, trackId, latLong, userPhotoUrl));
                 }
             }
         }
@@ -168,6 +168,6 @@ public class Waypoint {
     }
 
     public String getPhotoUrl() {
-        return photoUrl;
+        return userPhotoUrl;
     }
 }
