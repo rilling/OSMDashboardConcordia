@@ -143,7 +143,7 @@ public class MapUtils {
 
     public static float bearing(LatLong src, LatLong dest) {
         if (src == null || dest == null) {
-            return 0;
+            throw new IllegalArgumentException("Source and Destination cannot be null");
         }
         return toLocation(src).bearingTo(toLocation(dest));
     }
