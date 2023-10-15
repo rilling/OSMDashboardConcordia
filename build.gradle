@@ -8,9 +8,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.2'
+        classpath 'com.android.tools.build:gradle:8.1.1'
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
-
     }
 }
 
@@ -24,10 +23,10 @@ plugins {
 
 sonarqube {
     properties {
-        property "sonar.projectKey", "Compass"
-        property "sonar.projectName", "Compass"
+        property "sonar.projectKey", "SCM"
+        property "sonar.projectName", "SCM"
         property "sonar.host.url", "http://localhost:9000"
-        property "sonar.login", "sqp_320e32441e93a4b69251201b28a89d9338056dbb"
+        property "sonar.login", "sqp_4eedf70c8096eb6f5c56af72cb9aae08a10905f6"
     }
 }
 

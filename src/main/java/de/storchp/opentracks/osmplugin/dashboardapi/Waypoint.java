@@ -45,7 +45,7 @@ public class Waypoint {
     public static final Pattern QUERY_POSITION_PATTERN = Pattern.compile("q=([+-]?\\d+(?:\\.\\d+)?),\\s?([+-]?\\d+(?:\\.\\d+)?)");
 
     private long id;
-    private final String name;
+    private final String waypointName;
     private String description;
     private String category;
     private String icon;
@@ -53,9 +53,9 @@ public class Waypoint {
     private final LatLong latLong;
     private String photoUrl;
 
-    public Waypoint(long id, String name, String description, String category, String icon, long trackId, LatLong latLong, String photoUrl) {
+    public Waypoint(long id, String waypointName, String description, String category, String icon, long trackId, LatLong latLong, String photoUrl) {
         this.id = id;
-        this.name = name;
+        this.waypointName = waypointName;
         this.description = description;
         this.category = category;
         this.icon = icon;
@@ -64,9 +64,9 @@ public class Waypoint {
         this.photoUrl = photoUrl;
     }
 
-    public Waypoint(final LatLong latLong, final String name) {
+    public Waypoint(final LatLong latLong, final String waypointName) {
         this.latLong = latLong;
-        this.name = name;
+        this.waypointName = waypointName;
     }
 
     public static Optional<Waypoint> fromGeoUri(String uri) {
@@ -144,7 +144,7 @@ public class Waypoint {
     }
 
     public String getName() {
-        return name;
+        return waypointName;
     }
 
     public String getDescription() {

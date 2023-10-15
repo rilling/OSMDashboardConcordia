@@ -37,7 +37,6 @@ public class Compass extends AbstractSensor {
         return new Bearing(filteredBearing);
     }
 
-
     private boolean updateAccel() {
         gotAccel = true;
         return updateSensor();
