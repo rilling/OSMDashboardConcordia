@@ -99,7 +99,7 @@ public class DownloadActivity extends BaseActivity {
             Log.i(TAG, "downloadUri=" + downloadUri + ", downloadType=" + downloadType);
 
             binding.downloadInfo.setText(downloadUri.toString());
-            binding.startDownloadButton.setOnClickListener((view) -> startDownload());
+            binding.startDownloadButton.setOnClickListener(view -> startDownload());
         } else {
             binding.downloadInfo.setText(R.string.no_download_uri_found);
             binding.startDownloadButton.setEnabled(false);
@@ -256,6 +256,7 @@ public class DownloadActivity extends BaseActivity {
                         input.close();
                     }
                 } catch (IOException ignored) {
+                    Log.e(TAG, "IOException", ignored);
                 }
 
                 if (connection != null) {
