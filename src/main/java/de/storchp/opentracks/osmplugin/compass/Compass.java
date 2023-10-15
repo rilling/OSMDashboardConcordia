@@ -37,6 +37,12 @@ public class Compass extends AbstractSensor {
         return new Bearing(filteredBearing);
     }
 
+
+    private boolean updateAccel() {
+        gotAccel = true;
+        return updateSensor();
+    }
+
     private boolean updateSensor() {
         boolean shouldReturnTrue = false;
 
@@ -81,13 +87,6 @@ public class Compass extends AbstractSensor {
 
         return shouldReturnTrue;
     }
-
-
-    private boolean updateAccel() {
-        gotAccel = true;
-        return updateSensor();
-    }
-
     private boolean updateMag() {
         gotMag = true;
         return updateSensor();
