@@ -37,51 +37,55 @@ public class Compass extends AbstractSensor {
         return new Bearing(filteredBearing);
     }
 
-    private boolean updateSensor() {
-        if (!gotAccel || !gotMag) {
-            return false;
-        }
-
-        // Gravity
-        var normGravity = accelerometer.getValue().normalize();
-        var normMagField = magnetometer.getValue().normalize();
-
-        // East vector
-        var  east = normMagField.cross(normGravity);
-        var  normEast = east.normalize();
-
-        // Magnitude check
-        float eastMagnitude = east.magnitude();
-        float gravityMagnitude = accelerometer.getValue().magnitude();
-        float magneticMagnitude = magnetometer.getValue().magnitude();
-        if (gravityMagnitude * magneticMagnitude * eastMagnitude < 0.1f) {
-            return true;
-        }
-
-        // North vector
-        var north = normMagField.minus(normGravity.times(normGravity.dot(normMagField)));
-        var normNorth = north.normalize();
-
-        // Azimuth
-        // NB: see https://math.stackexchange.com/questions/381649/whats-the-best-3d-angular-co-ordinate-system-for-working-with-smartfone-apps
-        float sin = normEast.getY() - normNorth.getX();
-        float cos = normEast.getX() + normNorth.getY();
-        float azimuth = (sin != 0f && cos != 0f) ? (float) Math.atan2(sin, cos) : 0f;
-
-        if (Float.isNaN(azimuth)){
-            return true;
-        }
-
-        updateBearing((float) Math.toDegrees(azimuth));
-        notifyListeners();
-        return true;
-    }
-
     private boolean updateAccel() {
         gotAccel = true;
         return updateSensor();
     }
 
+    private boolean updateSensor() {
+        boolean shouldReturnTrue = false;
+
+        if (!gotAccel || !gotMag) {
+            shouldReturnTrue = true;
+        } else {
+            // Gravity
+            var normGravity = accelerometer.getValue().normalize();
+            var normMagField = magnetometer.getValue().normalize();
+
+            // East vector
+            var east = normMagField.cross(normGravity);
+            var normEast = east.normalize();
+
+            // Magnitude check
+            float eastMagnitude = east.magnitude();
+            float gravityMagnitude = accelerometer.getValue().magnitude();
+            float magneticMagnitude = magnetometer.getValue().magnitude();
+            if (gravityMagnitude * magneticMagnitude * eastMagnitude < 0.1f) {
+                shouldReturnTrue = true;
+            }
+
+            // North vector
+            var north = normMagField.minus(normGravity.times(normGravity.dot(normMagField)));
+            var normNorth = north.normalize();
+
+            // Azimuth
+            // NB: see https://math.stackexchange.com/questions/381649/whats-the-best-3d-angular-co-ordinate-system-for-working-with-smartfone-apps
+            float sin = normEast.getY() - normNorth.getX();
+            float cos = normEast.getX() + normNorth.getY();
+            float azimuth = (sin != 0f && cos != 0f) ? (float) Math.atan2(sin, cos) : 0f;
+
+            if (Float.isNaN(azimuth)){
+                shouldReturnTrue = true;
+            }
+
+            if (!shouldReturnTrue) {
+                updateBearing((float) Math.toDegrees(azimuth));
+                notifyListeners();
+            }
+        }
+
+        return shouldReturnTrue;
+    }
     private boolean updateMag() {
         gotMag = true;
         return updateSensor();
