@@ -26,7 +26,7 @@ sonarqube {
         property "sonar.projectKey", "SCM"
         property "sonar.projectName", "SCM"
         property "sonar.host.url", "http://localhost:9000"
-        property "sonar.login", "sqp_4eedf70c8096eb6f5c56af72cb9aae08a10905f6"
+        property "sonar.login", "sqp_63b175f4b9c4fb1e84ed434e08bba3ec36468723"
     }
 }
 
