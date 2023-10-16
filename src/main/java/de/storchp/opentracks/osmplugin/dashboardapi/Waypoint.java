@@ -28,7 +28,7 @@ public class Waypoint {
     public static final String LATITUDE = "latitude"; // latitude
     public static final String PHOTOURL = "photoUrl"; // url for the photo
 
-    protected static final String[] PROJECTION = {
+    public static final String[] PROJECTION = {
             _ID,
             NAME,
             DESCRIPTION,
@@ -51,28 +51,17 @@ public class Waypoint {
     private String icon;
     private long trackId;
     private final LatLong latLong;
-    private String userPhotoUrl;
+    private String photoUrl;
 
-    record Configuration(
-            long id,
-            String name,
-            String description,
-            String category,
-            String icon,
-            long trackId,
-            LatLong latLong,
-            String userPhotoUrl) {
-    }
-
-    public Waypoint(Configuration config) {
-        this.id = config.id;
-        this.name = config.name;
-        this.description = config.description;
-        this.category = config.category;
-        this.icon = config.icon;
-        this.trackId = config.trackId;
-        this.latLong = config.latLong;
-        this.userPhotoUrl = config.userPhotoUrl;
+    public Waypoint(long id, String name, String description, String category, String icon, long trackId, LatLong latLong, String photoUrl) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.icon = icon;
+        this.trackId = trackId;
+        this.latLong = latLong;
+        this.photoUrl = photoUrl;
     }
 
     public Waypoint(final LatLong latLong, final String name) {
@@ -141,10 +130,8 @@ public class Waypoint {
                 var longitude = cursor.getInt(cursor.getColumnIndexOrThrow(Waypoint.LONGITUDE)) / LAT_LON_FACTOR;
                 if (MapUtils.isValid(latitude, longitude)) {
                     var latLong = new LatLong(latitude, longitude);
-                    var userPhotoUrl = cursor.getString(cursor.getColumnIndexOrThrow(Waypoint.PHOTOURL));
-                    waypoints.add(new Waypoint(
-                            new Configuration(waypointId, name, description, category, icon, trackId, latLong, userPhotoUrl))
-                    );
+                    var photoUrl = cursor.getString(cursor.getColumnIndexOrThrow(Waypoint.PHOTOURL));
+                    waypoints.add(new Waypoint(waypointId, name, description, category, icon, trackId, latLong, photoUrl));
                 }
             }
         }
@@ -181,6 +168,6 @@ public class Waypoint {
     }
 
     public String getPhotoUrl() {
-        return userPhotoUrl;
+        return photoUrl;
     }
 }
