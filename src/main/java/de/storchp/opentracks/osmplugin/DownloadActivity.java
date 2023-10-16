@@ -385,7 +385,7 @@ public class DownloadActivity extends BaseActivity {
             this.extractMapFromZIP = extractMapFromZIP;
         }
 
-        public abstract Uri getDirectoryUri();
+        abstract public Uri getDirectoryUri();
 
         public int getOverwriteMessageId() {
             return overwriteMessageId;
