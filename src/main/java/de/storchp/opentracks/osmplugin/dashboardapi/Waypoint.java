@@ -53,15 +53,26 @@ public class Waypoint {
     private final LatLong latLong;
     private String userPhotoUrl;
 
-    public Waypoint(long id, String name, String description, String category, String icon, long trackId, LatLong latLong, String userPhotoUrl) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.category = category;
-        this.icon = icon;
-        this.trackId = trackId;
-        this.latLong = latLong;
-        this.userPhotoUrl = userPhotoUrl;
+    record Configuration(
+            long id,
+            String name,
+            String description,
+            String category,
+            String icon,
+            long trackId,
+            LatLong latLong,
+            String userPhotoUrl) {
+    }
+
+    public Waypoint(Configuration config) {
+        this.id = config.id;
+        this.name = config.name;
+        this.description = config.description;
+        this.category = config.category;
+        this.icon = config.icon;
+        this.trackId = config.trackId;
+        this.latLong = config.latLong;
+        this.userPhotoUrl = config.userPhotoUrl;
     }
 
     public Waypoint(final LatLong latLong, final String name) {
@@ -131,7 +142,9 @@ public class Waypoint {
                 if (MapUtils.isValid(latitude, longitude)) {
                     var latLong = new LatLong(latitude, longitude);
                     var userPhotoUrl = cursor.getString(cursor.getColumnIndexOrThrow(Waypoint.PHOTOURL));
-                    waypoints.add(new Waypoint(waypointId, name, description, category, icon, trackId, latLong, userPhotoUrl));
+                    waypoints.add(new Waypoint(
+                            new Configuration(waypointId, name, description, category, icon, trackId, latLong, userPhotoUrl))
+                    );
                 }
             }
         }
