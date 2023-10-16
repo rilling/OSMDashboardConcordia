@@ -3,32 +3,18 @@ buildscript {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven{
-            url"https://plugins.gradle.org/m2/"
-        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.1.1'
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7"
     }
 }
-
 
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'de.mannodermaus.android-junit5'
-    id "org.sonarqube" version "4.2.1.3168"
 }
 
-sonarqube {
-    properties {
-        property "sonar.projectKey", "SCM"
-        property "sonar.projectName", "SCM"
-        property "sonar.host.url", "http://localhost:9000"
-        property "sonar.login", "sqp_63b175f4b9c4fb1e84ed434e08bba3ec36468723"
-    }
-}
 
 def getVersionCode = { ->
     try {
@@ -46,7 +32,7 @@ def getVersionCode = { ->
 android {
     defaultConfig {
         compileSdk 34
-        buildToolsVersion = "33.0.1"
+        buildToolsVersion = "30.0.3"
         minSdkVersion 24
         targetSdkVersion 34
         versionCode 38
