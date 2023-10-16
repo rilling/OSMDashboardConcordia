@@ -23,7 +23,6 @@ public abstract class AbstractLowPassSensor extends AbstractSensor {
         this.sensorType = sensorType;
         this.sensorDelay = sensorDelay;
         this.sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-//        Instead of hardcoding the number of filters, running a loop for instantiation 
         int numFilters  = 3;
         this.filters = new LowPassFilter[numFilters];
         for(int i = 0; i < numFilters; i++){
