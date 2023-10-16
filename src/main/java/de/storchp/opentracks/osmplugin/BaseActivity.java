@@ -202,7 +202,7 @@ abstract class BaseActivity extends AppCompatActivity {
                 .create();
         alertDialog.show();
 
-        alertDialog.getButton(android.content.DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
             var newTolerance = binding.etTolerance.getText().toString().trim();
             if (newTolerance.length() > 0 && TextUtils.isDigitsOnly(newTolerance)) {
                 PreferencesUtils.setTrackSmoothingTolerance(Integer.parseInt(newTolerance));
