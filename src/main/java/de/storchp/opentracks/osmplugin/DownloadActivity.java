@@ -99,7 +99,7 @@ public class DownloadActivity extends BaseActivity {
             Log.i(TAG, "downloadUri=" + downloadUri + ", downloadType=" + downloadType);
 
             binding.downloadInfo.setText(downloadUri.toString());
-            binding.startDownloadButton.setOnClickListener((view) -> startDownload());
+            binding.startDownloadButton.setOnClickListener(view -> startDownload());
         } else {
             binding.downloadInfo.setText(R.string.no_download_uri_found);
             binding.startDownloadButton.setEnabled(false);
@@ -128,15 +128,15 @@ public class DownloadActivity extends BaseActivity {
         var file = directoryFile.findFile(fileName);
         if (file != null) {
             new AlertDialog.Builder(DownloadActivity.this)
-                .setIcon(R.drawable.ic_logo_color_24dp)
-                .setTitle(R.string.app_name)
-                .setMessage(getString(downloadType.getOverwriteMessageId(), fileName))
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    file.delete();
-                    startDownload();
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .create().show();
+                    .setIcon(R.drawable.ic_logo_color_24dp)
+                    .setTitle(R.string.app_name)
+                    .setMessage(getString(downloadType.getOverwriteMessageId(), fileName))
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        file.delete();
+                        startDownload();
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create().show();
             return;
         }
 
@@ -256,6 +256,7 @@ public class DownloadActivity extends BaseActivity {
                         input.close();
                     }
                 } catch (IOException ignored) {
+                    Log.e(TAG, "IOException", ignored);
                 }
 
                 if (connection != null) {
@@ -318,7 +319,7 @@ public class DownloadActivity extends BaseActivity {
         // nothing to do
     }
 
-   @Override
+    @Override
     protected void changeArrowMode(ArrowMode arrowMode) {
         // nothing to do
     }
@@ -327,12 +328,12 @@ public class DownloadActivity extends BaseActivity {
     public void onBackPressed() {
         if (isDownloadInProgress()) {
             new AlertDialog.Builder(DownloadActivity.this)
-                .setIcon(R.drawable.ic_logo_color_24dp)
-                .setTitle(R.string.app_name)
-                .setMessage(getString(R.string.cancel_download_question))
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> downloadTask.cancelDownload())
-                .setNegativeButton(android.R.string.cancel, null)
-                .create().show();
+                    .setIcon(R.drawable.ic_logo_color_24dp)
+                    .setTitle(R.string.app_name)
+                    .setMessage(getString(R.string.cancel_download_question))
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> downloadTask.cancelDownload())
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create().show();
         } else {
             super.onBackPressed();
         }
