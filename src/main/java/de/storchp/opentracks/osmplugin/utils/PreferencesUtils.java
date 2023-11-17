@@ -31,7 +31,7 @@ public class PreferencesUtils {
 //            StatisticElement.DISTANCE_KM.name(),
 //            StatisticElement.PACE_MIN_KM.name());
 
-    private static Set<String> DEFAULT_STATISTIC_ELEMENTS;
+    private static Set<String> UNIT_STATISTIC_ELEMENTS;
 
     private static SharedPreferences sharedPrefs;
     private static Resources mRes;
@@ -46,12 +46,10 @@ public class PreferencesUtils {
 
 //        for(int index=0; index<mRes.getConfiguration().getLocales().size();index++)
 //        {
-
-            //assuming app can run on one system in single locale
             System.out.println(mRes.getConfiguration().getLocales().get(0).getCountry());
             if(mRes.getConfiguration().getLocales().get(0).getCountry().equals("US"))
             {
-                DEFAULT_STATISTIC_ELEMENTS = Set.of(
+                UNIT_STATISTIC_ELEMENTS = Set.of(
                         StatisticElement.CATEGORY.name(),
                         StatisticElement.MOVING_TIME.name(),
                         StatisticElement.DISTANCE_KM.name(),
@@ -60,7 +58,7 @@ public class PreferencesUtils {
                         StatisticElement.ELEVATION_GAIN_METER.name());
             }
             else {
-                DEFAULT_STATISTIC_ELEMENTS = Set.of(
+                UNIT_STATISTIC_ELEMENTS = Set.of(
                         StatisticElement.CATEGORY.name(),
                         StatisticElement.MOVING_TIME.name(),
                         StatisticElement.DISTANCE_MI.name(),
@@ -68,6 +66,8 @@ public class PreferencesUtils {
                         StatisticElement.SPEED_MI_H.name(),
                         StatisticElement.ELEVATION_GAIN_FEET.name());
             }
+
+            setStringSet(R.string.STATISTIC_ELEMENTS, UNIT_STATISTIC_ELEMENTS);
 //        }
 
     }
@@ -297,8 +297,7 @@ public class PreferencesUtils {
 //    }
 
     public static Set<StatisticElement> getStatisticElements() {
-        setStringSet(R.string.STATISTIC_ELEMENTS, DEFAULT_STATISTIC_ELEMENTS);
-        return getStringSet(R.string.STATISTIC_ELEMENTS, DEFAULT_STATISTIC_ELEMENTS).stream()
+        return getStringSet(R.string.STATISTIC_ELEMENTS, UNIT_STATISTIC_ELEMENTS).stream()
                 .map(StatisticElement::of)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
