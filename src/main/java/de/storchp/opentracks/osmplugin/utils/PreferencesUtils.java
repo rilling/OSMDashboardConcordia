@@ -25,13 +25,8 @@ public class PreferencesUtils {
         throw new IllegalStateException("Utility class");
     }
     private static final String TAG = PreferencesUtils.class.getSimpleName();
-//    private static final Set<String> DEFAULT_STATISTIC_ELEMENTS = Set.of(
-//            StatisticElement.CATEGORY.name(),
-//            StatisticElement.MOVING_TIME.name(),
-//            StatisticElement.DISTANCE_KM.name(),
-//            StatisticElement.PACE_MIN_KM.name());
 
-    private static Set<String> UNIT_STATISTIC_ELEMENTS;
+    private static Set<String> Unit_Statistic_Elements;
 
     private static SharedPreferences sharedPrefs;
     private static Resources mRes;
@@ -40,16 +35,10 @@ public class PreferencesUtils {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mRes = context.getResources();
 
-         //Tested using different locale.
-//        Locale frenchLocale = new Locale("fr");
-//        context.getResources().getConfiguration().setLocale(frenchLocale);
-
-//        for(int index=0; index<mRes.getConfiguration().getLocales().size();index++)
-//        {
             System.out.println(mRes.getConfiguration().getLocales().get(0).getCountry());
             if(mRes.getConfiguration().getLocales().get(0).getCountry().equals("US"))
             {
-                UNIT_STATISTIC_ELEMENTS = Set.of(
+                Unit_Statistic_Elements = Set.of(
                         StatisticElement.CATEGORY.name(),
                         StatisticElement.MOVING_TIME.name(),
                         StatisticElement.DISTANCE_KM.name(),
@@ -58,7 +47,7 @@ public class PreferencesUtils {
                         StatisticElement.ELEVATION_GAIN_METER.name());
             }
             else {
-                UNIT_STATISTIC_ELEMENTS = Set.of(
+                Unit_Statistic_Elements = Set.of(
                         StatisticElement.CATEGORY.name(),
                         StatisticElement.MOVING_TIME.name(),
                         StatisticElement.DISTANCE_MI.name(),
@@ -67,8 +56,7 @@ public class PreferencesUtils {
                         StatisticElement.ELEVATION_GAIN_FEET.name());
             }
 
-            setStringSet(R.string.STATISTIC_ELEMENTS, UNIT_STATISTIC_ELEMENTS);
-//        }
+            setStringSet(R.string.STATISTIC_ELEMENTS, Unit_Statistic_Elements);
 
     }
 
@@ -289,15 +277,8 @@ public class PreferencesUtils {
         setStringSet(R.string.STATISTIC_ELEMENTS, statisticElements.stream().map(StatisticElement::name).collect(Collectors.toSet()));
     }
 
-//    public static Set<StatisticElement> getStatisticElements() {
-//        return getStringSet(R.string.STATISTIC_ELEMENTS, DEFAULT_STATISTIC_ELEMENTS).stream()
-//                .map(StatisticElement::of)
-//                .filter(Objects::nonNull)
-//                .collect(Collectors.toSet());
-//    }
-
     public static Set<StatisticElement> getStatisticElements() {
-        return getStringSet(R.string.STATISTIC_ELEMENTS, UNIT_STATISTIC_ELEMENTS).stream()
+        return getStringSet(R.string.STATISTIC_ELEMENTS, Unit_Statistic_Elements).stream()
                 .map(StatisticElement::of)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
