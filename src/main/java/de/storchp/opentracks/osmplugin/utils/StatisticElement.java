@@ -4,6 +4,7 @@ import android.content.Context;
 
 import de.storchp.opentracks.osmplugin.R;
 
+//analyse this code for issue
 public enum StatisticElement {
     CATEGORY(R.string.category) {
         @Override

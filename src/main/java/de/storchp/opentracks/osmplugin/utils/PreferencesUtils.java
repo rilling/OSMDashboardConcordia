@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.LocaleList;
 import android.util.Log;
 
 import androidx.annotation.StringRes;
 import androidx.preference.PreferenceManager;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,15 +21,19 @@ import de.storchp.opentracks.osmplugin.R;
 
 public class PreferencesUtils {
 
+    // analyse this code for issue
+
     private PreferencesUtils() {
         throw new IllegalStateException("Utility class");
     }
     private static final String TAG = PreferencesUtils.class.getSimpleName();
-    private static final Set<String> DEFAULT_STATISTIC_ELEMENTS = Set.of(
-            StatisticElement.CATEGORY.name(),
-            StatisticElement.MOVING_TIME.name(),
-            StatisticElement.DISTANCE_KM.name(),
-            StatisticElement.PACE_MIN_KM.name());
+//    private static final Set<String> DEFAULT_STATISTIC_ELEMENTS = Set.of(
+//            StatisticElement.CATEGORY.name(),
+//            StatisticElement.MOVING_TIME.name(),
+//            StatisticElement.DISTANCE_KM.name(),
+//            StatisticElement.PACE_MIN_KM.name());
+
+    private static Set<String> DEFAULT_STATISTIC_ELEMENTS;
 
     private static SharedPreferences sharedPrefs;
     private static Resources mRes;
@@ -34,6 +41,37 @@ public class PreferencesUtils {
     public static void initPreferences(Context context) {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mRes = context.getResources();
+
+         //Tested using different locale.
+//        Locale frenchLocale = new Locale("fr");
+//        context.getResources().getConfiguration().setLocale(frenchLocale);
+
+//        for(int index=0; index<mRes.getConfiguration().getLocales().size();index++)
+//        {
+
+            //assuming app can run on one system in single locale
+            System.out.println(mRes.getConfiguration().getLocales().get(0).getCountry());
+            if(mRes.getConfiguration().getLocales().get(0).getCountry().equals("US"))
+            {
+                DEFAULT_STATISTIC_ELEMENTS = Set.of(
+                        StatisticElement.CATEGORY.name(),
+                        StatisticElement.MOVING_TIME.name(),
+                        StatisticElement.DISTANCE_KM.name(),
+                        StatisticElement.PACE_MIN_KM.name(),
+                        StatisticElement.SPEED_KM_H.name(),
+                        StatisticElement.ELEVATION_GAIN_METER.name());
+            }
+            else {
+                DEFAULT_STATISTIC_ELEMENTS = Set.of(
+                        StatisticElement.CATEGORY.name(),
+                        StatisticElement.MOVING_TIME.name(),
+                        StatisticElement.DISTANCE_MI.name(),
+                        StatisticElement.PACE_MIN_MI.name(),
+                        StatisticElement.SPEED_MI_H.name(),
+                        StatisticElement.ELEVATION_GAIN_FEET.name());
+            }
+//        }
+
     }
 
     private static String getKey(@StringRes int keyId) {
@@ -253,7 +291,15 @@ public class PreferencesUtils {
         setStringSet(R.string.STATISTIC_ELEMENTS, statisticElements.stream().map(StatisticElement::name).collect(Collectors.toSet()));
     }
 
+//    public static Set<StatisticElement> getStatisticElements() {
+//        return getStringSet(R.string.STATISTIC_ELEMENTS, DEFAULT_STATISTIC_ELEMENTS).stream()
+//                .map(StatisticElement::of)
+//                .filter(Objects::nonNull)
+//                .collect(Collectors.toSet());
+//    }
+
     public static Set<StatisticElement> getStatisticElements() {
+        setStringSet(R.string.STATISTIC_ELEMENTS, DEFAULT_STATISTIC_ELEMENTS);
         return getStringSet(R.string.STATISTIC_ELEMENTS, DEFAULT_STATISTIC_ELEMENTS).stream()
                 .map(StatisticElement::of)
                 .filter(Objects::nonNull)
