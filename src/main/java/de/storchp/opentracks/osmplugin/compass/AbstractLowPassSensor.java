@@ -19,14 +19,15 @@ public abstract class AbstractLowPassSensor extends AbstractSensor {
     private final LowPassFilter[] filters;
     private Vector3 value = Vector3.ZERO;
 
-    public AbstractLowPassSensor(Context context, int sensorType, int sensorDelay, float filterSize) {
+    protected AbstractLowPassSensor(Context context, int sensorType, int sensorDelay, float filterSize) {
         this.sensorType = sensorType;
         this.sensorDelay = sensorDelay;
         this.sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        this.filters = new LowPassFilter[]{
-                new LowPassFilter(filterSize),
-                new LowPassFilter(filterSize),
-                new LowPassFilter(filterSize)};
+        int numFilters  = 3;
+        this.filters = new LowPassFilter[numFilters];
+        for(int i = 0; i < numFilters; i++){
+            this.filters[i] = new LowPassFilter(filterSize);
+        }
     }
 
     protected void handleSensorEvent(SensorEvent event) {
@@ -46,6 +47,8 @@ public abstract class AbstractLowPassSensor extends AbstractSensor {
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int newAccuracy) {
+            //Do Nothing
+            throw new UnsupportedOperationException();
         }
 
     };
