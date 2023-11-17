@@ -21,8 +21,6 @@ import de.storchp.opentracks.osmplugin.R;
 
 public class PreferencesUtils {
 
-    // analyse this code for issue
-
     private PreferencesUtils() {
         throw new IllegalStateException("Utility class");
     }

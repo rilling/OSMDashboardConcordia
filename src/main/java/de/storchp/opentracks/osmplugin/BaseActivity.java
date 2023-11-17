@@ -157,7 +157,6 @@ abstract class BaseActivity extends AppCompatActivity {
                 .create().show();
     }
 
-    // analyse this code for issue
     private void showConfigureStatisticDialog() {
         var availableStatisticElements = StatisticElement.values();
         var selectedStatisticElements = PreferencesUtils.getStatisticElements();
