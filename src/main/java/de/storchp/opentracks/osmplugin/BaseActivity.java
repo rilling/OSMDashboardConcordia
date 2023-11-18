@@ -36,6 +36,8 @@ import de.storchp.opentracks.osmplugin.utils.PreferencesUtils;
 import de.storchp.opentracks.osmplugin.utils.StatisticElement;
 import de.storchp.opentracks.osmplugin.utils.TrackColorMode;
 
+
+//class responsible for configure statistic dialog
 abstract class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
@@ -161,6 +163,7 @@ abstract class BaseActivity extends AppCompatActivity {
         var selected = new boolean[availableStatisticElements.length];
         for (int i = 0; i < selected.length; i++) {
             selected[i] = selectedStatisticElements.contains(availableStatisticElements[i]);
+
         }
 
         new android.app.AlertDialog.Builder(this)
