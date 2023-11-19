@@ -58,4 +58,9 @@ public class MainActivity extends BaseActivity {
         // nothing to do
     }
 
+    @Override
+    protected void changeTypeOfMap(String s) {
+        // nothing to do
+    }
+
 }

@@ -133,6 +133,14 @@ abstract class BaseActivity extends AppCompatActivity {
             item.setChecked(!item.isChecked());
             PreferencesUtils.setDebugTrackPoints(item.isChecked());
             updateDebugTrackPoints();
+        } else if(itemId == R.id.normal_map) {
+            changeTypeOfMap("normal");
+        } else if(itemId == R.id.hybrid_map) {
+            changeTypeOfMap("hybrid");
+        } else if(itemId == R.id.satellite_map) {
+            changeTypeOfMap("satellite");
+        } else if(itemId == R.id.terrain_map) {
+            changeTypeOfMap("terrain");
         }
 
         return super.onOptionsItemSelected(item);
@@ -181,6 +189,8 @@ abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected abstract void changeMapMode(MapMode mapMode);
+
+    protected abstract void changeTypeOfMap(String s);
 
     public void updateDebugTrackPoints() {
         // override in subclasses

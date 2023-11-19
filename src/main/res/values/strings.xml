@@ -106,5 +106,9 @@
     <string name="track_color_mode_uni">Unicolor</string>
     <string name="track_color_mode_by_track">Color by track</string>
     <string name="track_color_mode_by_speed">Color by speed</string>
-
+    <string name="normal">Normal</string>
+    <string name="hybrid">Hybrid</string>
+    <string name="satellite">Satellite</string>
+    <string name="terrain">Terrain</string>
+    <string name="change_map_view">Map View</string>
 </resources>

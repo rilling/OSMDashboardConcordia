@@ -75,4 +75,8 @@ public class DownloadMapSelectionActivity extends BaseActivity {
         // nothing to do
     }
 
+    @Override
+    protected void changeTypeOfMap(String s) {
+        // nothing to do
+    }
 }
