@@ -35,7 +35,7 @@ public class PreferencesUtils {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mRes = context.getResources();
 
-            System.out.println(mRes.getConfiguration().getLocales().get(0).getCountry());
+
             if(mRes.getConfiguration().getLocales().get(0).getCountry().equals("US"))
             {
                 Unit_Statistic_Elements = Set.of(
