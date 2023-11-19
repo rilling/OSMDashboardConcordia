@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.LayoutInflater;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -90,7 +92,17 @@ import de.storchp.opentracks.osmplugin.utils.StatisticElement;
 import de.storchp.opentracks.osmplugin.utils.TrackColorMode;
 import de.storchp.opentracks.osmplugin.utils.TrackPointsDebug;
 import de.storchp.opentracks.osmplugin.utils.TrackStatistics;
+class TrackColorInfo {
+    double speed;
+    int color;
+    String legendText;
 
+    TrackColorInfo(int color, double speed, String legendText) {
+        this.color = color;
+        this.speed = speed;
+        this.legendText = legendText;
+    }
+}
 public class MapsActivity extends BaseActivity implements SensorListener {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
@@ -132,11 +144,17 @@ public class MapsActivity extends BaseActivity implements SensorListener {
     private Set<Uri> mapFiles;
     private Uri mapTheme;
     private TrackPointsDebug trackPointsDebug;
+    private TextView legendTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidGraphicFactory.createInstance(this.getApplication());
+
+        View rootView = LayoutInflater.from(this).inflate(R.layout.map, null);
+        setContentView(rootView);
+        legendTextView = rootView.findViewById(R.id.legendTitle);
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -594,10 +612,20 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                         }
 
                         if (trackColorMode == TrackColorMode.BY_SPEED) {
-                            trackColor = getTrackColorBySpeed(average, averageToMaxSpeed, trackPoint);
+                            TrackColorInfo trackColInfo = getTrackColorBySpeed(average, averageToMaxSpeed, trackPoint);
+                            //trackColor = getTrackColorBySpeed(average, averageToMaxSpeed, trackPoint);
+                            trackColor = trackColInfo.color;
                             polyline = addNewPolyline(trackColor);
                             if (endPos != null) {
                                 polyline.addPoint(endPos);
+                                // Reference the Legend Text View
+                                legendTextView.findViewById(R.id.legendTitle);
+                                // Calculate TrackColorInfo
+                                TrackColorInfo trackColorInfo = getTrackColorBySpeed(average, maxSpeed, trackPoint);
+                                // Update the legend TextView
+                                String existingText = legendTextView.getText().toString();
+                                String newText = existingText.isEmpty() ? trackColorInfo.legendText : existingText + "\n" + trackColorInfo.legendText;
+                                legendTextView.setText(newText);
                             } else if (startPos != null) {
                                 polyline.addPoint(startPos);
                             }
@@ -711,18 +739,43 @@ public class MapsActivity extends BaseActivity implements SensorListener {
         }
     }
 
-    private int getTrackColorBySpeed(final double average, final double averageToMaxSpeed, final TrackPoint trackPoint) {
+//    private int getTrackColorBySpeed(final double average, final double averageToMaxSpeed, final TrackPoint trackPoint) {
+//        double speed = trackPoint.getSpeed();
+//        int red = 255;
+//        int green = 255;
+//        if (speed == 0.0) {
+//            green = 0;
+//        } else if (trackPoint.getSpeed() < average) {
+//            green = (int) (255 * speed / average);
+//        } else {
+//            red = 255 - (int) (255 * (speed - average) / averageToMaxSpeed);
+//        }
+//        return Color.argb(255, red, green, 0);
+//    }
+
+    private TrackColorInfo getTrackColorBySpeed(final double average, final double maxSpeed, final TrackPoint trackPoint) {
         double speed = trackPoint.getSpeed();
-        int red = 255;
-        int green = 255;
+        int color;
+        String legendText;
+
         if (speed == 0.0) {
-            green = 0;
-        } else if (trackPoint.getSpeed() < average) {
-            green = (int) (255 * speed / average);
+            color = Color.rgb(0, 100, 0); // green
+            legendText = "Stopped (0 km/h) - Green";
+        } else if (speed < average) {
+            color = Color.rgb(255, 255, 0); // yellow
+            legendText = String.format("Slower than Average (%.2f km/h) - Yellow", speed);
+        } else if (speed == average) {
+            color = Color.rgb(255, 165, 0); //orange
+            legendText = String.format("Average Speed (%.2f km/h) - Orange", average);
+        } else if (speed < maxSpeed) {
+            color = Color.rgb(0, 0, 255);  //blue
+            legendText = String.format("Faster than Average (%.2f km/h) - Blue", speed);
         } else {
-            red = 255 - (int) (255 * (speed - average) / averageToMaxSpeed);
+            color = Color.rgb(255, 0, 0);
+            legendText = String.format("Max Speed Reached (%.2f km/h) - Red", maxSpeed);
         }
-        return Color.argb(255, red, green, 0);
+
+        return new TrackColorInfo(color, speed, legendText);
     }
 
     private void setEndMarker(LatLong endPos) {
