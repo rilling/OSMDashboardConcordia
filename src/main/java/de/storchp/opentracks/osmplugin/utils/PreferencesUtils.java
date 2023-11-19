@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.LocaleList;
 import android.util.Log;
 
 import androidx.annotation.StringRes;
 import androidx.preference.PreferenceManager;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,11 +25,8 @@ public class PreferencesUtils {
         throw new IllegalStateException("Utility class");
     }
     private static final String TAG = PreferencesUtils.class.getSimpleName();
-    private static final Set<String> DEFAULT_STATISTIC_ELEMENTS = Set.of(
-            StatisticElement.CATEGORY.name(),
-            StatisticElement.MOVING_TIME.name(),
-            StatisticElement.DISTANCE_KM.name(),
-            StatisticElement.PACE_MIN_KM.name());
+
+    private static Set<String> Unit_Statistic_Elements;
 
     private static SharedPreferences sharedPrefs;
     private static Resources mRes;
@@ -34,6 +34,30 @@ public class PreferencesUtils {
     public static void initPreferences(Context context) {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mRes = context.getResources();
+
+            System.out.println(mRes.getConfiguration().getLocales().get(0).getCountry());
+            if(mRes.getConfiguration().getLocales().get(0).getCountry().equals("US"))
+            {
+                Unit_Statistic_Elements = Set.of(
+                        StatisticElement.CATEGORY.name(),
+                        StatisticElement.MOVING_TIME.name(),
+                        StatisticElement.DISTANCE_KM.name(),
+                        StatisticElement.PACE_MIN_KM.name(),
+                        StatisticElement.SPEED_KM_H.name(),
+                        StatisticElement.ELEVATION_GAIN_METER.name());
+            }
+            else {
+                Unit_Statistic_Elements = Set.of(
+                        StatisticElement.CATEGORY.name(),
+                        StatisticElement.MOVING_TIME.name(),
+                        StatisticElement.DISTANCE_MI.name(),
+                        StatisticElement.PACE_MIN_MI.name(),
+                        StatisticElement.SPEED_MI_H.name(),
+                        StatisticElement.ELEVATION_GAIN_FEET.name());
+            }
+
+            setStringSet(R.string.STATISTIC_ELEMENTS, Unit_Statistic_Elements);
+
     }
 
     private static String getKey(@StringRes int keyId) {
@@ -254,7 +278,7 @@ public class PreferencesUtils {
     }
 
     public static Set<StatisticElement> getStatisticElements() {
-        return getStringSet(R.string.STATISTIC_ELEMENTS, DEFAULT_STATISTIC_ELEMENTS).stream()
+        return getStringSet(R.string.STATISTIC_ELEMENTS, Unit_Statistic_Elements).stream()
                 .map(StatisticElement::of)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
