@@ -19,6 +19,24 @@
 
     </org.mapsforge.map.android.rotation.RotateView>
 
+    <RelativeLayout
+        android:id="@+id/legendLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/legendTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Legend"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@android:color/black" />
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/share_picture_title"
         android:layout_width="match_parent"
