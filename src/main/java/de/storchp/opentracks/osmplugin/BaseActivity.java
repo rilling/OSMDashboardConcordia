@@ -230,12 +230,18 @@ abstract class BaseActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                // This method is intentionally left blank.
+                // onStartTrackingTouch is not used in this context but is required to be overridden as part of the interface.
+                // Throwing an exception to prevent unintended use.
+                throw new UnsupportedOperationException("onStartTrackingTouch is not implemented and should not be used in this context.");
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                // This method is intentionally left blank.
+                // onStopTrackingTouch is not used in this context but is required to be overridden as part of the interface.
+                // Throwing an exception to prevent unintended use.
+                throw new UnsupportedOperationException("onStopTrackingTouch is not implemented and should not be used in this context.");
             }
         });
 
