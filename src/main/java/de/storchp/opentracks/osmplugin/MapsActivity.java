@@ -4,6 +4,9 @@ package de.storchp.opentracks.osmplugin;
 import static android.util.TypedValue.COMPLEX_UNIT_PT;
 import static java.util.Comparator.comparingInt;
 
+import static de.storchp.opentracks.osmplugin.utils.UnitConversions.M_TO_KM;
+import static de.storchp.opentracks.osmplugin.utils.UnitConversions.M_TO_MI;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -12,6 +15,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -108,6 +113,8 @@ public class MapsActivity extends BaseActivity implements SensorListener {
     private BoundingBox boundingBox;
     private GroupLayer polylinesLayer;
     private GroupLayer waypointsLayer;
+
+    private GroupLayer markerLayers;
     private long lastWaypointId = 0;
     private long lastTrackPointId = 0;
     private long lastTrackId = 0;
@@ -544,7 +551,7 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                 setOnlineTileLayer();
                 ((TileDownloadLayer) this.tileLayer).onResume();
             }
-        } else if (this.tileLayer instanceof TileDownloadLayer) {
+        } else if (this.tileLayer != null && this.tileLayer instanceof TileDownloadLayer) {
             ((TileDownloadLayer) this.tileLayer).onPause();
             binding.map.mapView.getLayerManager().getLayers().remove(tileLayer, true);
             this.tileLayer = null;
@@ -557,7 +564,10 @@ public class MapsActivity extends BaseActivity implements SensorListener {
         synchronized (binding.map.mapView.getLayerManager().getLayers()) {
             var latLongs = new ArrayList<LatLong>();
             int tolerance = PreferencesUtils.getTrackSmoothingTolerance();
+            int distanceInterval =10;// PreferencesUtils.getDistanceInterval();
+            var isDistanceInMilesSelected = false;// PreferencesUtils.getStatisticElements().contains(StatisticElement.DISTANCE_MI);
 
+//            Log.d("isDistanceInMilesSelected", String.valueOf(isDistanceInMilesSelected));
             try {
                 var trackpointsBySegments = TrackPoint.readTrackPointsBySegments(getContentResolver(), data, lastTrackPointId, protocolVersion);
                 if (trackpointsBySegments.isEmpty()) {
@@ -573,21 +583,28 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                     trackColorMode = TrackColorMode.DEFAULT;
                 }
 
+                double totalDistance = 0,CurrentInterval=0;
+                double remainingDistance = distanceInterval;
+                LatLong prevPoint=null;
+
                 for (var trackPoints : trackpointsBySegments.getSegments()) {
+                    Log.d("trackPointsss",trackPoints.toString());
                     if (!update) {
                         polyline = null; // cut polyline on new segment
                         if (tolerance > 0) { // smooth track
                             trackPoints = MapUtils.decimate(tolerance, trackPoints);
                         }
                     }
+
                     for (var trackPoint : trackPoints) {
+                        Log.d("trackPoint",trackPoint.toString());
                         lastTrackPointId = trackPoint.getTrackPointId();
 
-                        if (trackPoint.getPointTrackCode() != lastTrackId) {
+                        if (trackPoint.getTrackPointId() != lastTrackId) {
                             if (trackColorMode == TrackColorMode.BY_TRACK) {
                                 trackColor = colorCreator.nextColor();
                             }
-                            lastTrackId = trackPoint.getPointTrackCode();
+                            lastTrackId = trackPoint.getTrackPointId();
                             polyline = null; // reset current polyline when trackId changes
                             startPos = null;
                             endPos = null;
@@ -607,10 +624,56 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                                 polyline = addNewPolyline(trackColor);
                             }
                         }
-
                         endPos = trackPoint.getLatLong();
                         polyline.addPoint(endPos);
                         movementDirection.updatePos(endPos);
+
+                        if(prevPoint!=null){
+                            double distance;
+                            if(isDistanceInMilesSelected)
+                                distance=MapUtils.distance(prevPoint,endPos,endPos) * M_TO_MI; //in Miles
+                            else
+                                distance=MapUtils.distance(prevPoint,endPos,endPos) * M_TO_KM; //in km
+                            Log.d("disss", String.valueOf(distance));
+                            totalDistance += distance;
+//                            Log.d("tdisss", String.valueOf(totalDistance));
+//                            if (totalDistance >= kmInterval) {
+//                                // Add a marker at the current position
+//                                CurrentInterval=CurrentInterval+kmInterval;
+//                                RotatableMarker markerLayer=createAndGetMarker(trackPoint,String.valueOf((int)CurrentInterval));
+//                                markerLayers.layers.add(markerLayer);
+//                                // Reset the accumulated distance
+//                                totalDistance = 0;
+//                            }
+
+                            while (remainingDistance <= distance) {
+                                // Calculate the position for the marker at the specified interval
+                                double fraction = remainingDistance / distance;
+                                double markerLon = prevPoint.longitude + fraction * (trackPoint.getLatLong().longitude - prevPoint.longitude);
+                                double markerLat = prevPoint.latitude + fraction * (trackPoint.getLatLong().latitude - prevPoint.latitude);
+                                LatLong markerPosition = new LatLong(markerLat, markerLon);
+
+                                // Add a marker at the calculated position
+                                CurrentInterval += distanceInterval;
+//                                RotatableMarker markerLayer = createCircleMarkerWithText(markerPosition, String.valueOf((int) CurrentInterval));
+//                                markerLayer.setLatLong(markerPosition);
+//                                markerLayers.layers.add(markerLayer);
+                                // Update remaining distance
+                                distance -= remainingDistance;
+
+                                // Move to the next interval
+                                remainingDistance = distanceInterval;
+//                                // Update remaining distance
+//                                remainingDistance = kmInterval - (distance - remainingDistance);
+//
+//                                // Move to the next interval
+//                                CurrentInterval += kmInterval;
+                            }
+                            remainingDistance -= distance;
+                        }
+                        prevPoint=endPos;
+
+
 
                         if (!update) {
                             latLongs.add(endPos);
@@ -651,13 +714,26 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                     binding.map.mapView.setCenter(myPos);
                 }
                 var layers = binding.map.mapView.getLayerManager().getLayers();
-                if (layers.indexOf(polylinesLayer) == -1 && !polylinesLayer.layers.isEmpty()) {
+                if (layers.indexOf(polylinesLayer) == -1 && polylinesLayer.layers.size() > 0) {
                     layers.add(polylinesLayer);
+                    layers.add(markerLayers);
                 }
             }
             updateDebugTrackPoints();
         }
     }
+
+
+
+//    private RotatableMarker createCircleMarkerWithText(LatLong position,String text) {
+//
+//        RotatableMarker marker = new RotatableMarker(position, RotatableMarker.getBitmapFromVectorDrawable(this, R.drawable.blue_circle_marker,text));
+//
+//        return marker;
+//    }
+
+
+
 
     private void resetMapData() {
         stopCompass();
@@ -666,7 +742,7 @@ public class MapsActivity extends BaseActivity implements SensorListener {
         tracksUri = null;
         trackPointsUri = null;
         waypointsUri = null;
-  
+
         var layers = binding.map.mapView.getLayerManager().getLayers();
 
         // tracks
@@ -674,6 +750,7 @@ public class MapsActivity extends BaseActivity implements SensorListener {
             layers.remove(polylinesLayer);
         }
         polylinesLayer = new GroupLayer();
+        markerLayers=new GroupLayer();
         lastTrackId = 0;
         lastTrackPointId = 0;
         colorCreator = new StyleColorCreator(StyleColorCreator.GOLDEN_RATIO_CONJUGATE / 2);
@@ -698,14 +775,14 @@ public class MapsActivity extends BaseActivity implements SensorListener {
     public void updateDebugTrackPoints() {
         if (PreferencesUtils.isDebugTrackPoints()) {
             binding.map.trackpointsDebugInfo.setText(
-             getString(R.string.debug_trackpoints_info,
-                    trackPointsDebug.trackpointsReceived,
-                    trackPointsDebug.trackpointsInvalid,
-                    trackPointsDebug.trackpointsDrawn,
-                    trackPointsDebug.trackpointsPause,
-                    trackPointsDebug.segments,
-                    protocolVersion
-            ));
+                    getString(R.string.debug_trackpoints_info,
+                            trackPointsDebug.trackpointsReceived,
+                            trackPointsDebug.trackpointsInvalid,
+                            trackPointsDebug.trackpointsDrawn,
+                            trackPointsDebug.trackpointsPause,
+                            trackPointsDebug.segments,
+                            protocolVersion
+                    ));
         } else {
             binding.map.trackpointsDebugInfo.setText("");
         }
@@ -802,8 +879,10 @@ public class MapsActivity extends BaseActivity implements SensorListener {
 
     private void readTracks(Uri data) {
         var tracks = Track.readTracks(getContentResolver(), data);
+        System.out.println("tracksss - "+tracks.get(0));
         if (!tracks.isEmpty()) {
             var statistics = new TrackStatistics(tracks);
+            System.out.println("statss - "+statistics);
             removeStatisticElements();
             PreferencesUtils.getStatisticElements()
                     .stream()
@@ -905,13 +984,14 @@ public class MapsActivity extends BaseActivity implements SensorListener {
     }
 
     @Override
-protected void onPause() {
-    if (!isPiPMode() && tileLayer instanceof TileDownloadLayer) {
-        ((TileDownloadLayer) tileLayer).onPause();
+    protected void onPause() {
+        if (!isPiPMode()) {
+            if (tileLayer instanceof TileDownloadLayer) {
+                ((TileDownloadLayer) tileLayer).onPause();
+            }
+        }
+        super.onPause();
     }
-    super.onPause();
-}
-
 
     @Override
     protected void onStart() {
