@@ -38,7 +38,7 @@ public class MapUtils {
      * @param c2 the end of the lone segment
      * @return the distance in m (assuming spherical earth)
      */
-    private static double distance(LatLong c0, LatLong c1, LatLong c2) {
+    public static double distance(LatLong c0, LatLong c1, LatLong c2) {
         if (c1.equals(c2)) {
             return c2.sphericalDistance(c0);
         }
