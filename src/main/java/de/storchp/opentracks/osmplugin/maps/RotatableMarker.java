@@ -34,7 +34,7 @@ public class RotatableMarker extends Marker {
         return new AndroidBitmap(android.graphics.Bitmap.createBitmap(markerBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), matrix, true));
     }
 
-    public static android.graphics.Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
+    public static android.graphics.Bitmap getBitmapFromVectorDrawable(Context context, int drawableId, Object o) {
         var drawable = ContextCompat.getDrawable(context, drawableId);
         assert drawable != null;
         drawable = (DrawableCompat.wrap(drawable)).mutate();

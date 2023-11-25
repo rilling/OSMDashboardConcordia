@@ -564,6 +564,7 @@ public class MapsActivity extends BaseActivity implements SensorListener {
         synchronized (binding.map.mapView.getLayerManager().getLayers()) {
             var latLongs = new ArrayList<LatLong>();
             int tolerance = PreferencesUtils.getTrackSmoothingTolerance();
+            Log.d("completed SK1",PreferencesUtils.getStatisticElements().toString());
             int distanceInterval =10;// PreferencesUtils.getDistanceInterval();
             var isDistanceInMilesSelected = false;// PreferencesUtils.getStatisticElements().contains(StatisticElement.DISTANCE_MI);
 
