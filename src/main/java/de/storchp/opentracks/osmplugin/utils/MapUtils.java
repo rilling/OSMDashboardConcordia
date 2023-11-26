@@ -38,7 +38,7 @@ public class MapUtils {
      * @param c2 the end of the lone segment
      * @return the distance in m (assuming spherical earth)
      */
-    private static double distance(LatLong c0, LatLong c1, LatLong c2) {
+    public static double distance(LatLong c0, LatLong c1, LatLong c2) {
         if (c1.equals(c2)) {
             return c2.sphericalDistance(c0);
         }
@@ -93,7 +93,7 @@ public class MapUtils {
 
         if (n > 2) {
             stack.push(new int[]{0, (n - 1)});
-            while (stack.size() > 0) {
+            while (!stack.isEmpty()) {
                 current = stack.pop();
                 maxDist = 0;
                 for (idx = current[0] + 1; idx < current[1]; ++idx) {
