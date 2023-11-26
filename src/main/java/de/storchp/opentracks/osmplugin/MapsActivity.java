@@ -558,6 +558,8 @@ public class MapsActivity extends BaseActivity implements SensorListener {
         }
     }
 
+
+
     private void readTrackpoints(Uri data, boolean update, int protocolVersion) {
         Log.i(TAG, "Loading trackpoints from " + data);
 
@@ -628,9 +630,9 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                         polyline.addPoint(endPos);
                         movementDirection.updatePos(endPos);
 
-                        if(prevPoint!=null){
-                            remainingDistance =calulateDistanceOnTracksAndAddMarkers(isDistanceInMilesSelected,endPos,prevPoint,totalDistance,remainingDistance,distanceInterval,currentInterval);
-                        }
+                       if(prevPoint!=null){
+                           remainingDistance =calulateDistanceOnTracksAndAddMarkers(isDistanceInMilesSelected,endPos,prevPoint,totalDistance,remainingDistance,distanceInterval,currentInterval);
+                       }
                         prevPoint=endPos;
 
 
@@ -684,13 +686,13 @@ public class MapsActivity extends BaseActivity implements SensorListener {
     }
 
 
-    private double calulateDistanceOnTracksAndAddMarkers(boolean isDistanceInMilesSelected,LatLong endPos,LatLong prevPos,double totalDistance,double remainingDistance,double distanceInterval,double currentInterval){
-        double distance;
-        if(isDistanceInMilesSelected)
-            distance=MapUtils.distance(prevPos,endPos,endPos) * M_TO_MI; //in Miles
-        else
-            distance=MapUtils.distance(prevPos,endPos,endPos) * M_TO_KM; //in km
-        Log.d("disss", String.valueOf(distance));
+   private double calulateDistanceOnTracksAndAddMarkers(boolean isDistanceInMilesSelected,LatLong endPos,LatLong prevPos,double totalDistance,double remainingDistance,double distanceInterval,double currentInterval){
+       double distance;
+       if(isDistanceInMilesSelected)
+           distance=MapUtils.distance(prevPos,endPos,endPos) * M_TO_MI; //in Miles
+       else
+           distance=MapUtils.distance(prevPos,endPos,endPos) * M_TO_KM; //in km
+       Log.d("disss", String.valueOf(distance));
 //        totalDistance += distance;
 //                            Log.d("tdisss", String.valueOf(totalDistance));
 //                            if (totalDistance >= kmInterval) {
@@ -702,37 +704,43 @@ public class MapsActivity extends BaseActivity implements SensorListener {
 //                                totalDistance = 0;
 //                            }
 
-        while (remainingDistance <= distance) {
-            // Calculate the position for the marker at the specified interval
-            double fraction = remainingDistance / distance;
-            double markerLon = prevPos.longitude + fraction * (endPos.longitude - prevPos.longitude);
-            double markerLat = prevPos.latitude + fraction * (endPos.latitude - prevPos.latitude);
-            LatLong markerPosition = new LatLong(markerLat, markerLon);
+       while (remainingDistance <= distance) {
+           // Calculate the position for the marker at the specified interval
+           double fraction = remainingDistance / distance;
+           double markerLon = prevPos.longitude + fraction * (endPos.longitude - prevPos.longitude);
+           double markerLat = prevPos.latitude + fraction * (endPos.latitude - prevPos.latitude);
+           LatLong markerPosition = new LatLong(markerLat, markerLon);
 
-            // Add a marker at the calculated position
-            currentInterval += distanceInterval;
-            
-            //create marker with text and add to map as a layer
-            RotatableMarker markerLayer = null;
+           // Add a marker at the calculated position
+           currentInterval += distanceInterval;
+
+           //create marker with text and add to map as a layer
+           RotatableMarker markerLayer = createCircleMarkerWithText(markerPosition, String.valueOf((int) currentInterval));
 //                                markerLayer.setLatLong(markerPosition);
-            markerLayers.layers.add(markerLayer);
-            // Update remaining distance
-            distance -= remainingDistance;
+           markerLayers.layers.add(markerLayer);
+           // Update remaining distance
+           distance -= remainingDistance;
 
-            // Move to the next interval
-            remainingDistance = distanceInterval;
+           // Move to the next interval
+           remainingDistance = distanceInterval;
 //                                // Update remaining distance
 //                                remainingDistance = kmInterval - (distance - remainingDistance);
 //
 //                                // Move to the next interval
 //                                CurrentInterval += kmInterval;
-        }
-        remainingDistance -= distance;
-        return remainingDistance;
-    }
+       }
+       remainingDistance -= distance;
+       return remainingDistance;
+   }
 
 
 
+   private RotatableMarker createCircleMarkerWithText(LatLong position,String text) {
+
+       RotatableMarker marker = new RotatableMarker(position, RotatableMarker.getBitmapFromVectorDrawable(this, R.drawable.blue_circle_marker,text));
+
+       return marker;
+   }
 
 
 
@@ -752,7 +760,7 @@ public class MapsActivity extends BaseActivity implements SensorListener {
             layers.remove(polylinesLayer);
         }
         polylinesLayer = new GroupLayer();
-        markerLayers=new GroupLayer();
+//        markerLayers=new GroupLayer();
         lastTrackId = 0;
         lastTrackPointId = 0;
         colorCreator = new StyleColorCreator(StyleColorCreator.GOLDEN_RATIO_CONJUGATE / 2);
