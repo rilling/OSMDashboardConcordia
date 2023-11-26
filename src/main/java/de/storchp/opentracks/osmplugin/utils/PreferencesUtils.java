@@ -53,7 +53,8 @@ public class PreferencesUtils {
                         StatisticElement.DISTANCE_MI.name(),
                         StatisticElement.PACE_MIN_MI.name(),
                         StatisticElement.SPEED_MI_H.name(),
-                        StatisticElement.ELEVATION_GAIN_FEET.name());
+                        StatisticElement.ELEVATION_GAIN_FEET.name(),
+                        StatisticElement.AVERAGE_SPEED_KM_H.name());
             }
 
             setStringSet(R.string.STATISTIC_ELEMENTS, Unit_Statistic_Elements);
