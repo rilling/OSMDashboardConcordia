@@ -47,6 +47,11 @@ public class StringUtils {
         return context.getString(R.string.stat_distance_with_unit, formatDecimal(meterPerSeconds * MS_TO_KMH * KM_TO_MI), context.getString(R.string.unit_mile_per_hour));
     }
 
+    public static String formatDistanceInterval(Context context, double distanceInterval) {
+        // Example formatting, adjust as needed
+        return context.getString(R.string.distance_interval_format, distanceInterval);
+    }
+
     public static String formatPaceMinPerKm(Context context, float meterPerSeconds) {
         if (meterPerSeconds == 0) {
             return "0:00";

@@ -109,4 +109,19 @@ public class TrackStatistics {
     public float getElevationGainMeter() {
         return elevationGainMeter;
     }
+
+    private double distanceInterval; // The distance interval field
+
+    // Constructor and other methods
+
+
+    public double getDistanceInterval() {
+        return distanceInterval;
+    }
+
+
+
+    public void setDistanceInterval(double distanceInterval) {
+        this.distanceInterval = distanceInterval;
+    }
 }
