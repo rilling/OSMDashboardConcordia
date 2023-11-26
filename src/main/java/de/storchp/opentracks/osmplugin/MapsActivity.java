@@ -41,6 +41,17 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.documentfile.provider.DocumentFile;
 
+import android.content.Context;
+import org.mapsforge.map.android.graphics.AndroidBitmap;
+import org.mapsforge.map.layer.Layer;
+import java.io.InputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Point;
+
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
@@ -78,6 +89,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipInputStream;
+import java.util.concurrent.CountDownLatch;
 
 import de.storchp.opentracks.osmplugin.compass.Compass;
 import de.storchp.opentracks.osmplugin.compass.SensorListener;
@@ -146,6 +158,66 @@ public class MapsActivity extends BaseActivity implements SensorListener {
     private View legendBlueLayout;
 
     private TextView legendOrangeTextView;
+    public class CustomImageLayer extends Layer {
+            private final LatLong position;
+            private Bitmap customImageBitmap;
+            private CountDownLatch latch;
+            private final IMapViewPosition mapViewPosition;
+
+            public CustomImageLayer(Context context, LatLong position, String imageUrl, IMapViewPosition mapViewPosition) {
+                this.position = position;
+                this.latch = new CountDownLatch(1);
+                this.mapViewPosition = mapViewPosition;
+                downloadImageInBackground(imageUrl);
+                waitForDownload();
+            }
+
+            private void downloadImageInBackground(final String imageUrl) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            // Perform network operation in a background thread
+                            URL url = new URL(imageUrl);
+                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                            connection.setDoInput(true);
+                            connection.connect();
+
+                            InputStream input = connection.getInputStream();
+                            customImageBitmap = BitmapFactory.decodeStream(input);
+
+                            // Signal that the download is complete
+                            latch.countDown();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            // Signal that the download failed
+                            latch.countDown();
+                        }
+                    }
+                }).start();
+            }
+
+            private void waitForDownload() {
+                try {
+                    // Block until the download is complete or has failed
+                    latch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        @Override
+        public void draw(BoundingBox boundingBox, byte zoomLevel, org.mapsforge.core.graphics.Canvas canvas, Point topLeftPoint) {
+            if (customImageBitmap != null) {
+                int drawX = 0;
+                int drawY = 700;
+                canvas.drawBitmap(new AndroidBitmap(customImageBitmap), drawX, 100);
+                canvas.drawBitmap(new AndroidBitmap(customImageBitmap), drawX, 900);
+                canvas.drawBitmap(new AndroidBitmap(customImageBitmap), drawX, drawY);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -471,6 +543,29 @@ public class MapsActivity extends BaseActivity implements SensorListener {
 
         binding.map.mapView.setZoomLevelMin(tileSource.getZoomLevelMin());
         binding.map.mapView.setZoomLevelMax(tileSource.getZoomLevelMax());
+    }
+
+    @Override
+    protected void changeTypeOfMap(String s) {
+        if(s.equals("normal")) {
+            binding.map.mapView.getLayerManager().getLayers().remove(0);
+            setOnlineTileLayer();
+        }
+        else if (s.equals("satellite")) {
+            binding.map.mapView.getLayerManager().getLayers().remove(0);
+            this.tileLayer = new CustomImageLayer(null, new LatLong(1.0, 2.0), "https://drive.google.com/u/0/uc?id=1BHtTToMeBEKhcCTf2NNYNlo8MoITZr9D&export=download", this.binding.map.mapView.getModel().mapViewPosition);
+            binding.map.mapView.getLayerManager().getLayers().add(0, this.tileLayer);
+        }
+        else if (s.equals("terrain")) {
+            binding.map.mapView.getLayerManager().getLayers().remove(0);
+            this.tileLayer = new CustomImageLayer(null, new LatLong(1.0, 2.0), "https://drive.google.com/u/0/uc?id=1xqjgvPJMOWaQY0zgtozzvHQpLGwfdMrs&export=download", this.binding.map.mapView.getModel().mapViewPosition);
+            binding.map.mapView.getLayerManager().getLayers().add(0, this.tileLayer);
+        }
+        else if (s.equals("hybrid")) {
+            binding.map.mapView.getLayerManager().getLayers().remove(0);
+            this.tileLayer = new CustomImageLayer(null, new LatLong(1.0, 2.0), "https://drive.google.com/u/0/uc?id=1cGn977ebUJXRHXxPTH5WtfzjFoR6fill&export=download", this.binding.map.mapView.getModel().mapViewPosition);
+            binding.map.mapView.getLayerManager().getLayers().add(0, this.tileLayer);
+        }
     }
 
     private void showOnlineMapConsent() {
