@@ -74,8 +74,13 @@ public enum StatisticElement {
     AVERAGE_SPEED_KM_H(R.string.average_speed_km_h) {
         @Override
         public String getText(Context context, TrackStatistics statistics) {
-            double avgSpeedMetersPerSecond = statistics.getAvgSpeedMeterPerSecond();
-            return String.valueOf(avgSpeedMetersPerSecond);
+            return StringUtils.formatSpeedInKmPerHour(context, statistics.getAvgSpeedMeterPerSecond());
+        }
+    },
+    AVERAGE_SPEED_MI_H(R.string.average_speed_mi_h) {
+        @Override
+        public String getText(Context context, TrackStatistics statistics) {
+            return StringUtils.formatSpeedInMiPerHour(context, statistics.getAvgSpeedMeterPerSecond());
         }
     };
 

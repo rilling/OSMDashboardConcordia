@@ -36,28 +36,27 @@ public class PreferencesUtils {
         mRes = context.getResources();
 
 
-            if(mRes.getConfiguration().getLocales().get(0).getCountry().equals("US"))
-            {
-                Unit_Statistic_Elements = Set.of(
-                        StatisticElement.CATEGORY.name(),
-                        StatisticElement.MOVING_TIME.name(),
-                        StatisticElement.DISTANCE_KM.name(),
-                        StatisticElement.PACE_MIN_KM.name(),
-                        StatisticElement.SPEED_KM_H.name(),
-                        StatisticElement.ELEVATION_GAIN_METER.name());
-            }
-            else {
-                Unit_Statistic_Elements = Set.of(
-                        StatisticElement.CATEGORY.name(),
-                        StatisticElement.MOVING_TIME.name(),
-                        StatisticElement.DISTANCE_MI.name(),
-                        StatisticElement.PACE_MIN_MI.name(),
-                        StatisticElement.SPEED_MI_H.name(),
-                        StatisticElement.ELEVATION_GAIN_FEET.name(),
-                        StatisticElement.AVERAGE_SPEED_KM_H.name());
-            }
+        if (mRes.getConfiguration().getLocales().get(0).getCountry().equals("US")) {
+            Unit_Statistic_Elements = Set.of(
+                    StatisticElement.CATEGORY.name(),
+                    StatisticElement.MOVING_TIME.name(),
+                    StatisticElement.DISTANCE_KM.name(),
+                    StatisticElement.PACE_MIN_KM.name(),
+                    StatisticElement.SPEED_KM_H.name(),
+                    StatisticElement.ELEVATION_GAIN_METER.name(),
+                    StatisticElement.AVERAGE_SPEED_MI_H.name());
+        } else {
+            Unit_Statistic_Elements = Set.of(
+                    StatisticElement.CATEGORY.name(),
+                    StatisticElement.MOVING_TIME.name(),
+                    StatisticElement.DISTANCE_MI.name(),
+                    StatisticElement.PACE_MIN_MI.name(),
+                    StatisticElement.SPEED_MI_H.name(),
+                    StatisticElement.ELEVATION_GAIN_FEET.name(),
+                    StatisticElement.AVERAGE_SPEED_KM_H.name());
+        }
 
-            setStringSet(R.string.STATISTIC_ELEMENTS, Unit_Statistic_Elements);
+        setStringSet(R.string.STATISTIC_ELEMENTS, Unit_Statistic_Elements);
 
     }
 
