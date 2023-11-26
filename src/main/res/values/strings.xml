@@ -106,5 +106,5 @@
     <string name="track_color_mode_uni">Unicolor</string>
     <string name="track_color_mode_by_track">Color by track</string>
     <string name="track_color_mode_by_speed">Color by speed</string>
-
+    <string name="average_speed_km_h">Average speed (km/h)</string>
 </resources>
