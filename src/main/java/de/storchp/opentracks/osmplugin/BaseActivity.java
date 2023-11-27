@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import de.storchp.opentracks.osmplugin.databinding.CompassSmoothingDialogBinding;
+import de.storchp.opentracks.osmplugin.databinding.DistanceIntervalDialogBinding;
 import de.storchp.opentracks.osmplugin.databinding.OverdrawFactorDialogBinding;
 import de.storchp.opentracks.osmplugin.databinding.StrokeWidthDialogBinding;
 import de.storchp.opentracks.osmplugin.databinding.TilecacheCapacityFactorDialogBinding;
@@ -92,7 +93,11 @@ abstract class BaseActivity extends AppCompatActivity {
             showConfigureStatisticDialog();
         } else if (itemId == R.id.track_smoothing) {
             showTrackSmoothingDialog();
-        } else if (itemId == R.id.compass_smoothing) {
+        } 
+        else if (itemId == R.id.distance_interval) {
+            showDistanceIntervalDialog();
+        }
+        else if (itemId == R.id.compass_smoothing) {
             showCompassSmoothingDialog();
         } else if (itemId == R.id.stroke_width) {
             showStrokeWidthDialog();
@@ -156,6 +161,33 @@ abstract class BaseActivity extends AppCompatActivity {
                         })
                 .create().show();
     }
+
+    private void showDistanceIntervalDialog() {
+        var binding = DistanceIntervalDialogBinding.inflate(LayoutInflater.from(this));
+        binding.etDistanceInterval.setText(String.valueOf(PreferencesUtils.getDistanceInterval()));
+
+        var alertDialog = new AlertDialog.Builder(this)
+                .setView(binding.getRoot())
+                .setIcon(R.drawable.ic_logo_color_24dp)
+                .setTitle(R.string.distance_interval_menu)
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.ok, null)
+                .setNegativeButton(android.R.string.cancel, null)
+                .create();
+        alertDialog.show();
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            var newDistanceInterval = binding.etDistanceInterval.getText().toString().trim();
+            if (newDistanceInterval.length() > 0 && TextUtils.isDigitsOnly(newDistanceInterval)) {
+                PreferencesUtils.setDistanceInterval(Integer.parseInt(newDistanceInterval));
+                alertDialog.dismiss();
+                this.recreate();
+            } else {
+                Toast.makeText(BaseActivity.this, R.string.only_digits, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
     private void showConfigureStatisticDialog() {
         var availableStatisticElements = StatisticElement.values();

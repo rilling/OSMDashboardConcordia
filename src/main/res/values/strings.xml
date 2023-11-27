@@ -41,6 +41,9 @@
     <string name="track_smoothing_menu">Track smoothing</string>
     <string name="track_smoothing_info">Define the tolerance in meters for the track smoothing algorithm. Enter 0 to disable track smoothing.\nChange come into effect after reloading the track.</string>
     <string name="track_smoothing_hint">Track smoothing tolerance in meters</string>
+    <string name="distance_interval_menu">Distance Interval</string>
+    <string name="distance_interval_info">Define the Distance Interval in (km/miles) to specify at what interval the distance marker should be displayed. \nFor example every 1,2,5,10, 20 km (miles) depending on the units</string>
+    <string name="distance_interval_hint">Distance Interval</string>
     <string name="only_digits">Value must contain only digits</string>
     <string name="pip_mode">Picture in picture mode</string>
     <string name="arrow_mode_north">Arrow points to north</string>
@@ -106,6 +109,12 @@
     <string name="track_color_mode_uni">Unicolor</string>
     <string name="track_color_mode_by_track">Color by track</string>
     <string name="track_color_mode_by_speed">Color by speed</string>
+
+    <string name="distance_interval">Distance Interval</string> <!-- Add this line -->
+    <string name="distance_interval_format">Interval: %1$s km</string>
+
+
     <string name="average_speed_km_h">Average speed (km/h)</string>
     <string name="average_speed_mi_h">Average speed (mi/h)</string> 
+
 </resources>

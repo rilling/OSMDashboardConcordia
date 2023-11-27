@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -13,6 +16,7 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.layer.overlay.Marker;
 
+import de.storchp.opentracks.osmplugin.R;
 import de.storchp.opentracks.osmplugin.compass.Compass;
 import de.storchp.opentracks.osmplugin.utils.ArrowMode;
 import de.storchp.opentracks.osmplugin.utils.MapMode;
@@ -34,7 +38,9 @@ public class RotatableMarker extends Marker {
         return new AndroidBitmap(android.graphics.Bitmap.createBitmap(markerBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), matrix, true));
     }
 
-    public static android.graphics.Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
+    public static android.graphics.Bitmap getBitmapFromVectorDrawable(Context context, int drawableId,String text) {
+
+
         var drawable = ContextCompat.getDrawable(context, drawableId);
         assert drawable != null;
         drawable = (DrawableCompat.wrap(drawable)).mutate();
@@ -44,6 +50,26 @@ public class RotatableMarker extends Marker {
         var canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
+
+        if(text!=null){
+            // Inflate the layout containing the TextView
+            View view = LayoutInflater.from(context).inflate(R.layout.view_custom_marker, null);
+
+            // Find the TextView in the inflated layout
+            TextView textView = view.findViewById(R.id.numberTextView);
+
+            // Set the text for the TextView
+            textView.setText(text);
+
+            // Measure and layout the TextView to determine its size
+            textView.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            );
+            textView.layout(0, 0, textView.getMeasuredWidth(), textView.getMeasuredHeight());
+
+            textView.draw(canvas);
+        }
 
         return bitmap;
     }

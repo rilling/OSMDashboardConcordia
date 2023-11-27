@@ -201,6 +201,15 @@ public class PreferencesUtils {
         setInt(R.string.TRACK_SMOOTHING_TOLERANCE, value);
     }
 
+    public static int getDistanceInterval() {
+        return getInt(R.string.DISTANCE_INTERVAL, 10);
+    }
+
+    public static void setDistanceInterval(int value) {
+        setInt(R.string.DISTANCE_INTERVAL, value);
+    }
+
+
     public static boolean isPipEnabled() {
         return getBoolean(R.string.PIP_ENABLED, true);
     }

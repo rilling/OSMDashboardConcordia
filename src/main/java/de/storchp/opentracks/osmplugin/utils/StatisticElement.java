@@ -65,6 +65,14 @@ public enum StatisticElement {
             return StringUtils.formatAltitudeChangeInMeter(context, statistics.getElevationGainMeter());
         }
     },
+
+    DISTANCE_INTERVAL(R.string.distance_interval) {
+        @Override
+        public String getText(Context context, TrackStatistics statistics) {
+
+            return StringUtils.formatDistanceInterval(context, statistics.getDistanceInterval());
+        }
+    },
     ELEVATION_GAIN_FEET(R.string.elevation_feet) {
         @Override
         public String getText(Context context, TrackStatistics statistics) {

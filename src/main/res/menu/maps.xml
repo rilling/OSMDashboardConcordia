@@ -39,6 +39,10 @@
         android:title="@string/track_color"/>
 
     <item
+        android:id="@+id/distance_interval"
+        android:title="@string/distance_interval_menu"/>
+
+    <item
         android:id="@+id/configure_statistic"
         android:title="@string/configure_statistic"/>
 

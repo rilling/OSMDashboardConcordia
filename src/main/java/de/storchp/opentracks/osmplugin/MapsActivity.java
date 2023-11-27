@@ -4,6 +4,9 @@ package de.storchp.opentracks.osmplugin;
 import static android.util.TypedValue.COMPLEX_UNIT_PT;
 import static java.util.Comparator.comparingInt;
 
+import static de.storchp.opentracks.osmplugin.utils.UnitConversions.M_TO_KM;
+import static de.storchp.opentracks.osmplugin.utils.UnitConversions.M_TO_MI;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -111,6 +114,7 @@ public class MapsActivity extends BaseActivity implements SensorListener {
     private BoundingBox boundingBox;
     private GroupLayer polylinesLayer;
     private GroupLayer waypointsLayer;
+    private GroupLayer markerLayers;
     private long lastWaypointId = 0;
     private long lastTrackPointId = 0;
     private long lastTrackId = 0;
@@ -599,6 +603,11 @@ public class MapsActivity extends BaseActivity implements SensorListener {
             var latLongs = new ArrayList<LatLong>();
             int tolerance = PreferencesUtils.getTrackSmoothingTolerance();
 
+            boolean isDistanceIntervalOnTrackDisplay= PreferencesUtils.getStatisticElements().contains(StatisticElement.DISTANCE_INTERVAL);
+
+            int distanceInterval = PreferencesUtils.getDistanceInterval();
+            boolean isDistanceInMilesSelected = PreferencesUtils.getStatisticElements().contains(StatisticElement.DISTANCE_MI);
+
             try {
                 var trackpointsBySegments = TrackPoint.readTrackPointsBySegments(getContentResolver(), data, lastTrackPointId, protocolVersion);
                 if (trackpointsBySegments.isEmpty()) {
@@ -616,6 +625,10 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                 if (isOpenTracksRecordingThisTrack && !trackColorMode.isSupportsLiveTrack()) {
                     trackColorMode = TrackColorMode.DEFAULT;
                 }
+
+                double currentInterval=0;
+                double remainingDistance = distanceInterval;
+                LatLong prevPoint=null;
 
                 for (var trackPoints : trackpointsBySegments.getSegments()) {
                     if (!update) {
@@ -657,6 +670,16 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                         polyline.addPoint(endPos);
                         movementDirection.updatePos(endPos);
 
+                        if(isDistanceIntervalOnTrackDisplay && prevPoint!=null){
+
+                            double[] results =calulateDistanceOnTracksAndAddMarkers(isDistanceInMilesSelected,endPos,prevPoint,remainingDistance,distanceInterval,currentInterval);
+                            remainingDistance=results[0];
+                            currentInterval=results[1];
+
+                        }
+                        prevPoint=endPos;
+
+
                         if (!update) {
                             latLongs.add(endPos);
                         }
@@ -697,13 +720,57 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                 }
                 var layers = binding.map.mapView.getLayerManager().getLayers();
                 if (layers.indexOf(polylinesLayer) == -1 && !polylinesLayer.layers.isEmpty()) {
+
                     layers.add(polylinesLayer);
+                    if(isDistanceIntervalOnTrackDisplay)
+                        layers.add(markerLayers);
                 }
             }
             updateDebugTrackPoints();
         }
     }
 
+    private double[] calulateDistanceOnTracksAndAddMarkers(boolean isDistanceInMilesSelected,LatLong endPos,LatLong prevPos,double remainingDistance,double distanceInterval,double currentInterval){
+        double distance;
+
+
+        if(isDistanceInMilesSelected)
+            distance=MapUtils.distance(prevPos,endPos,endPos) * M_TO_MI; //in Miles
+        else
+            distance=MapUtils.distance(prevPos,endPos,endPos) * M_TO_KM; //in km
+
+        while (remainingDistance <= distance) {
+            // Calculate the position for the marker at the specified interval
+            double fraction = remainingDistance / distance;
+            double markerLon = prevPos.longitude + fraction * (endPos.longitude - prevPos.longitude);
+            double markerLat = prevPos.latitude + fraction * (endPos.latitude - prevPos.latitude);
+            LatLong markerPosition = new LatLong(markerLat, markerLon);
+
+            // Add a marker at the calculated position
+            currentInterval += distanceInterval;
+            RotatableMarker markerLayer = createCircleMarkerWithText(markerPosition, String.valueOf((int) currentInterval));
+            markerLayer.setLatLong(markerPosition);
+            markerLayers.layers.add(markerLayer);
+            // Update remaining distance
+            distance -= remainingDistance;
+
+            // Move to the next interval
+            remainingDistance = distanceInterval;
+
+        }
+        remainingDistance -= distance;
+        return new double[] {remainingDistance,currentInterval};
+    }
+
+
+
+
+    private RotatableMarker createCircleMarkerWithText(LatLong position,String text) {
+
+        RotatableMarker marker = new RotatableMarker(position, RotatableMarker.getBitmapFromVectorDrawable(this, R.drawable.blue_circle_marker,text));
+
+        return marker;
+    }
 
     private void resetMapData() {
         stopCompass();
@@ -720,6 +787,7 @@ public class MapsActivity extends BaseActivity implements SensorListener {
             layers.remove(polylinesLayer);
         }
         polylinesLayer = new GroupLayer();
+        markerLayers=new GroupLayer();
         lastTrackId = 0;
         lastTrackPointId = 0;
         colorCreator = new StyleColorCreator(StyleColorCreator.GOLDEN_RATIO_CONJUGATE / 2);
@@ -775,7 +843,7 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                 endMarker.rotateWith(arrowMode, mapMode, movementDirection, compass);
                 endMarker.setLatLong(endPos);
             } else {
-                endMarker = new RotatableMarker(endPos, RotatableMarker.getBitmapFromVectorDrawable(this, R.drawable.ic_compass));
+                endMarker = new RotatableMarker(endPos, RotatableMarker.getBitmapFromVectorDrawable(this, R.drawable.ic_compass,null));
                 endMarker.rotateWith(arrowMode, mapMode, movementDirection, compass);
                 polylinesLayer.layers.add(endMarker);
             }
