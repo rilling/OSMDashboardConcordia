@@ -405,5 +405,8 @@ public class DownloadActivity extends BaseActivity {
 
         public abstract ActivityResultLauncher<Intent> getLauncher(BaseActivity activity);
     }
-
+    @Override
+    protected void changeTypeOfMap(String s) {
+        // nothing to do
+    }
 }
