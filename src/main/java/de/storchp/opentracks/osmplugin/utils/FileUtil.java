@@ -9,10 +9,7 @@ import androidx.documentfile.provider.DocumentFile;
 public class FileUtil {
 
     private static final String TAG = FileUtil.class.getSimpleName();
-
-   private FileUtil() {
-       throw new UnsupportedOperationException("Utility class");
-   }
+    
     public static DocumentFile getDocumentFileFromTreeUri(Context context, Uri uri) {
         try {
             return DocumentFile.fromTreeUri(context, uri);
@@ -22,7 +19,9 @@ public class FileUtil {
         return null;
     }
 
-    public void FileUtil()
+    public FileUtil()
     {
+        // Throw an exception if this constructor is accidentally called from within the class.
+        throw new UnsupportedOperationException("FileUtil is a utility class and should not be instantiated.");
     }
 }
