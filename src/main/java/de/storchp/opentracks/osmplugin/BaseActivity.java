@@ -36,6 +36,8 @@ import de.storchp.opentracks.osmplugin.utils.PreferencesUtils;
 import de.storchp.opentracks.osmplugin.utils.StatisticElement;
 import de.storchp.opentracks.osmplugin.utils.TrackColorMode;
 
+
+//class responsible for configure statistic dialog
 abstract class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
@@ -161,6 +163,7 @@ abstract class BaseActivity extends AppCompatActivity {
         var selected = new boolean[availableStatisticElements.length];
         for (int i = 0; i < selected.length; i++) {
             selected[i] = selectedStatisticElements.contains(availableStatisticElements[i]);
+
         }
 
         new android.app.AlertDialog.Builder(this)
@@ -202,7 +205,7 @@ abstract class BaseActivity extends AppCompatActivity {
                 .create();
         alertDialog.show();
 
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+        alertDialog.getButton(android.content.DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
             var newTolerance = binding.etTolerance.getText().toString().trim();
             if (newTolerance.length() > 0 && TextUtils.isDigitsOnly(newTolerance)) {
                 PreferencesUtils.setTrackSmoothingTolerance(Integer.parseInt(newTolerance));
@@ -227,12 +230,18 @@ abstract class BaseActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                // This method is intentionally left blank.
+                // onStartTrackingTouch is not used in this context but is required to be overridden as part of the interface.
+                // Throwing an exception to prevent unintended use.
+                throw new UnsupportedOperationException("onStartTrackingTouch is not implemented and should not be used in this context.");
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                // This method is intentionally left blank.
+                // onStopTrackingTouch is not used in this context but is required to be overridden as part of the interface.
+                // Throwing an exception to prevent unintended use.
+                throw new UnsupportedOperationException("onStopTrackingTouch is not implemented and should not be used in this context.");
             }
         });
 
