@@ -78,6 +78,18 @@ public enum StatisticElement {
         public String getText(Context context, TrackStatistics statistics) {
             return StringUtils.formatAltitudeChangeInFeet(context, statistics.getElevationGainMeter());
         }
+    },
+    AVERAGE_SPEED_KM_H(R.string.average_speed_km_h) {
+        @Override
+        public String getText(Context context, TrackStatistics statistics) {
+            return StringUtils.formatSpeedInKmPerHour(context, statistics.getAvgSpeedMeterPerSecond());
+        }
+    },
+    AVERAGE_SPEED_MI_H(R.string.average_speed_mi_h) {
+        @Override
+        public String getText(Context context, TrackStatistics statistics) {
+            return StringUtils.formatSpeedInMiPerHour(context, statistics.getAvgSpeedMeterPerSecond());
+        }
     };
 
     private final int labelResId;

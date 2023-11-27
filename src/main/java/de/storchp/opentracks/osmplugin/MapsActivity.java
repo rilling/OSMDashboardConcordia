@@ -29,8 +29,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.LayoutInflater;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -64,6 +67,7 @@ import org.mapsforge.map.rendertheme.StreamRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.ZipRenderTheme;
 import org.mapsforge.map.rendertheme.ZipXmlThemeResourceProvider;
+import org.mapsforge.map.rendertheme.renderinstruction.Line;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -93,7 +97,6 @@ import de.storchp.opentracks.osmplugin.utils.StatisticElement;
 import de.storchp.opentracks.osmplugin.utils.TrackColorMode;
 import de.storchp.opentracks.osmplugin.utils.TrackPointsDebug;
 import de.storchp.opentracks.osmplugin.utils.TrackStatistics;
-
 public class MapsActivity extends BaseActivity implements SensorListener {
 
     private static final String TAG = MapsActivity.class.getSimpleName();
@@ -137,6 +140,13 @@ public class MapsActivity extends BaseActivity implements SensorListener {
     private Uri mapTheme;
     private TrackPointsDebug trackPointsDebug;
 
+    private LinearLayout legendLayout;
+    private View legendYellowLayout;
+    private View legendOrangeLayout;
+    private View legendBlueLayout;
+
+    private TextView legendOrangeTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,6 +154,22 @@ public class MapsActivity extends BaseActivity implements SensorListener {
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        legendLayout = binding.map.legendLayout;
+        legendYellowLayout = binding.map.legendYellow;
+        legendBlueLayout =  binding.map.legendBlue;
+        legendOrangeLayout =  binding.map.legendOrange;
+        legendOrangeTextView = binding.map.legendOrangeTextView;
+
+        var trackColorMode = PreferencesUtils.getTrackColorMode();
+        if (TrackColorMode.BY_SPEED == trackColorMode){
+            legendLayout.setVisibility(View.VISIBLE);
+            legendYellowLayout.setVisibility(View.VISIBLE);
+            legendOrangeLayout.setVisibility(View.VISIBLE);
+            legendBlueLayout.setVisibility(View.VISIBLE);
+        }else{
+            legendLayout.setVisibility(View.GONE);
+        }
+
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
@@ -176,6 +202,21 @@ public class MapsActivity extends BaseActivity implements SensorListener {
             onNewIntent(intent);
         }
     }
+
+    
+    private void setupLegendVisibility() {
+        var trackColorMode = PreferencesUtils.getTrackColorMode();
+        if (TrackColorMode.BY_SPEED == trackColorMode){
+            legendLayout.setVisibility(View.VISIBLE);
+            legendYellowLayout.setVisibility(View.VISIBLE);
+            legendOrangeLayout.setVisibility(View.VISIBLE);
+            legendBlueLayout.setVisibility(View.VISIBLE);
+        }else{
+            legendLayout.setVisibility(View.GONE);
+        }
+    }
+
+
 
     private void switchFullscreen() {
         showFullscreen(!fullscreenMode);
@@ -575,6 +616,9 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                 }
 
                 double average = trackpointsBySegments.calcAverageSpeed();
+                String formattedAverage = String.format("%.2f", average);
+                String newText = "Avg. Speed ( " + formattedAverage + " m/s )";
+                legendOrangeTextView.setText(newText);
                 double maxSpeed = trackpointsBySegments.calcMaxSpeed();
                 double averageToMaxSpeed = maxSpeed - average;
                 var trackColorMode = PreferencesUtils.getTrackColorMode();
@@ -607,7 +651,8 @@ public class MapsActivity extends BaseActivity implements SensorListener {
                         }
 
                         if (trackColorMode == TrackColorMode.BY_SPEED) {
-                            trackColor = getTrackColorBySpeed(average, averageToMaxSpeed, trackPoint);
+                            double currentSpeed = trackPoint.getSpeed();
+                            trackColor = getTrackColorBySpeed(currentSpeed, average, maxSpeed);
                             polyline = addNewPolyline(trackColor);
                             if (endPos != null) {
                                 polyline.addPoint(endPos);
@@ -685,8 +730,6 @@ public class MapsActivity extends BaseActivity implements SensorListener {
         }
     }
 
-
-
     private double[] calulateDistanceOnTracksAndAddMarkers(boolean isDistanceInMilesSelected,LatLong endPos,LatLong prevPos,double remainingDistance,double distanceInterval,double currentInterval){
         double distance;
 
@@ -728,7 +771,6 @@ public class MapsActivity extends BaseActivity implements SensorListener {
 
         return marker;
     }
-
 
     private void resetMapData() {
         stopCompass();
@@ -783,19 +825,17 @@ public class MapsActivity extends BaseActivity implements SensorListener {
         }
     }
 
-    private int getTrackColorBySpeed(final double average, final double averageToMaxSpeed, final TrackPoint trackPoint) {
-        double speed = trackPoint.getSpeed();
-        int red = 255;
-        int green = 255;
-        if (speed == 0.0) {
-            green = 0;
-        } else if (trackPoint.getSpeed() < average) {
-            green = (int) (255 * speed / average);
-        } else {
-            red = 255 - (int) (255 * (speed - average) / averageToMaxSpeed);
+
+    private int getTrackColorBySpeed(final double currentSpeed, final double bsAvgSpeed, final double bsMaxSpeed) {
+            if (currentSpeed < bsAvgSpeed) {
+            return Color.rgb(255, 255, 0); // Yellow
+        } else if (currentSpeed == bsAvgSpeed) {
+            return Color.rgb(255, 165, 0); // Orange
+        } else  {
+            return Color.rgb(0, 0, 255);  // Blue
         }
-        return Color.argb(255, red, green, 0);
     }
+
 
     private void setEndMarker(LatLong endPos) {
         synchronized (binding.map.mapView.getLayerManager().getLayers()) {
