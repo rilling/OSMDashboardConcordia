@@ -57,5 +57,10 @@ public class MainActivity extends BaseActivity {
     protected void onOnlineMapConsentChanged(boolean consent) {
         // nothing to do
     }
-
+    
+    @Override
+    protected void changeTypeOfMap(String s) {
+        // nothing to do
+    }
+    
 }
