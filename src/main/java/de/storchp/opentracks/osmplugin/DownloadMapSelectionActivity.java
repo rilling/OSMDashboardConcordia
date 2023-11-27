@@ -74,5 +74,10 @@ public class DownloadMapSelectionActivity extends BaseActivity {
     protected void changeArrowMode(ArrowMode arrowMode) {
         // nothing to do
     }
+    
+    @Override
+    protected void changeTypeOfMap(String s) {
+        // nothing to do
+    }
 
 }
